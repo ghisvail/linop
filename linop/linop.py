@@ -64,7 +64,7 @@ class BaseLinearOperator(object):
     def dtype(self, value):
         allowed_types = np.core.numerictypes.typeDict.keys() + \
                             [np.float, np.complex, np.int, np.uint]
-        if value in allowed_types:
+        if value in allows_types:
             self.__dtype = value
         else:
             raise TypeError('Not a Numpy type')
@@ -433,3 +433,59 @@ def linop_from_ndarray(A):
                           lambda v: np.dot(A, v),
                           matvec_transp=lambda u: np.dot(A.T, u),
                           symmetric=False)
+
+
+if __name__ == '__main__':
+    from pykrylov.tools import check_symmetric
+    from pysparse.sparse.pysparseMatrix import PysparseMatrix as sp
+    from nlpy.model import AmplModel
+    import sys
+
+    np.set_printoptions(precision=3, linewidth=80, threshold=10, edgeitems=3)
+
+    nlp = AmplModel(sys.argv[1])
+    J = sp(matrix=nlp.jac(nlp.x0))
+    e1 = np.ones(J.shape[0])
+    e2 = np.ones(J.shape[1])
+    print 'J.shape = ', J.getShape()
+
+    print 'Testing PysparseLinearOperator:'
+    op = PysparseLinearOperator(J)
+    print 'op.shape = ', op.shape
+    print 'op.T.shape = ', op.T.shape
+    print 'op * e2 = ', op * e2
+    print "op.T * e1 = ", op.T * e1
+    print 'op.T.T * e2 = ', op.T.T * e2
+    print 'op.T.T.T * e1 = ', op.T.T.T * e1
+    print 'With call:'
+    print 'op(e2) = ', op(e2)
+    print 'op.T(e1) = ', op.T(e1)
+    print 'op.T.T is op : ', (op.T.T is op)
+    print
+    print 'Testing LinearOperator:'
+    op = LinearOperator(J.shape[1], J.shape[0],
+                        lambda v: J*v,
+                        matvec_transp=lambda u: u*J)
+    print 'op.shape = ', op.shape
+    print 'op.T.shape = ', op.T.shape
+    print 'op * e2 = ', op * e2
+    print 'e1.shape = ', e1.shape
+    print 'op.T * e1 = ', op.T * e1
+    print 'op.T.T * e2 = ', op.T.T * e2
+    print 'op(e2) = ', op(e2)
+    print 'op.T(e1) = ', op.T(e1)
+    print 'op.T.T is op : ', (op.T.T is op)
+    print
+    op2 = op.T * op
+    print 'op2 * e2 = ', op2 * e2
+    print 'op.T * (op * e2) = ', op.T * (op * e2)
+    print 'op2 is symmetric: ', check_symmetric(op2)
+    op3 = op * op.T
+    print 'op3 * e1 = ', op3 * e1
+    print 'op * (op.T * e1) = ', op * (op.T * e1)
+    print 'op3 is symmetric: ', check_symmetric(op3)
+    print
+    print 'Testing negative operator:'
+    nop = -op
+    print op * e2
+    print nop * e2
