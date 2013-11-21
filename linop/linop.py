@@ -58,6 +58,7 @@ class BaseLinearOperator(object):
 
     @property
     def dtype(self):
+        "The data type of the operator."
         return self.__dtype
 
     @dtype.setter
