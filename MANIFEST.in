@@ -1,0 +1,4 @@
+include CHANGELOG
+include COPYING
+include README.md
+include linop/*.py
