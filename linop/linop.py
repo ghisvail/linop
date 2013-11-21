@@ -61,15 +61,6 @@ class BaseLinearOperator(object):
         "The data type of the operator."
         return self.__dtype
 
-    @dtype.setter
-    def dtype(self, value):
-        allowed_types = np.core.numerictypes.typeDict.keys() + \
-                            [np.float, np.complex, np.int, np.uint]
-        if value in allowed_types:
-            self.__dtype = value
-        else:
-            raise TypeError('Not a Numpy type')
-
     @property
     def nMatvec(self):
         "The number of products with vectors computed so far."
