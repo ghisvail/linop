@@ -64,7 +64,7 @@ class BaseLinearOperator(object):
     def dtype(self, value):
         allowed_types = np.core.numerictypes.typeDict.keys() + \
                             [np.float, np.complex, np.int, np.uint]
-        if value in allows_types:
+        if value in allowed_types:
             self.__dtype = value
         else:
             raise TypeError('Not a Numpy type')
