@@ -228,8 +228,8 @@ class LinearOperator(BaseLinearOperator):
         raise ValueError('Cannot multiply')
 
     def __rmul__(self, x):
-        if isinstance(x, BaseLinearOperator):
-            return x.__mul_linop(self)
+        if np.isscalar(x):
+            return self.__mul__(x)
         raise ValueError('Cannot multiply')
 
     def __add__(self, other):
