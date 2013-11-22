@@ -139,8 +139,34 @@ class LinearOperator(BaseLinearOperator):
         return self.__H
 
     def matvec(self, x):
-        "Matrix-vector multiplication"
-        return self.__matvec(x)
+        """Matrix-vector multiplication
+
+        Note
+        ----
+        The matvec property encapsulates the matvec routine specified at
+        construct time, to ensure the consistency of the input and output
+        arrays with the operator's shape.
+        """
+        x = np.asanyarray(x)
+        M, N = self.shape
+
+        # check input data consistency
+        try:
+            x = x.reshape(N)
+        except ValueError:
+            msg = 'input array size incompatible with operator dimensions'
+            raise ValueError(msg)
+
+        y = self.__matvec(x)
+
+        # check output data consistency
+        try:
+            y = y.reshape(M)
+        except ValueError:
+            msg = 'output array size incompatible with operator dimensions'
+            raise ValueError(msg)
+
+        return y
 
     def to_array(self):
         n,m = self.shape
