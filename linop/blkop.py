@@ -101,7 +101,7 @@ class BlockLinearOperator(LinearOperator):
                                 matvec_transp=lambda x: blk_matvec(x, blocksT),
                                 dtype=op_dtype)
 
-        self.T._blocks = blocksT
+        self.H._blocks = blocksT
 
     @property
     def blocks(self):
@@ -193,7 +193,7 @@ class BlockDiagonalLinearOperator(LinearOperator):
                                 matvec_transp=lambda x: blk_matvec(x, blocksT),
                                 dtype=op_dtype)
 
-        self.T._blocks = blocksT
+        self.H._blocks = blocksT
 
     @property
     def blocks(self):

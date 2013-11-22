@@ -104,32 +104,35 @@ class LinearOperator(BaseLinearOperator):
         self.__matvec = matvec
 
         if self.symmetric:
-            self.__T = self
+            self.__H = self
         else:
             if transpose_of is None:
                 if matvec_transp is not None:
                     # Create 'pointer' to transpose operator.
-                    self.__T = LinearOperator(nargout, nargin,
+                    self.__H = LinearOperator(nargout, nargin,
                                               matvec_transp,
                                               matvec_transp=matvec,
                                               transposed=not self.__transposed,
                                               transpose_of=self,
                                               **kwargs)
                 else:
-                    self.__T = None
+                    self.__H = None
             else:
                 # Use operator supplied as transpose operator.
                 if isinstance(transpose_of, BaseLinearOperator):
-                    self.__T = transpose_of
+                    self.__H = transpose_of
                 else:
                     msg = 'kwarg transposed_of must be a BaseLinearOperator.'
                     msg += ' Got ' + str(transpose_of.__class__)
                     raise ValueError(msg)
 
+        if not issubclass(np.dtype(self.__dtype).type, np.complex):
+            self.T = self.H
+
     @property
-    def T(self):
-        "The transpose operator."
-        return self.__T
+    def H(self):
+        "The adjoint operator."
+        return self.__H
 
     def to_array(self):
         n,m = self.shape
@@ -145,7 +148,7 @@ class LinearOperator(BaseLinearOperator):
             return x * (self(y))
 
         def matvec_transp(y):
-            return x * (self.T(y))
+            return x * (self.H(y))
 
         result_type = np.result_type(self.dtype, type(x))
 
@@ -164,7 +167,7 @@ class LinearOperator(BaseLinearOperator):
             return self(op(x))
 
         def matvec_transp(x):
-            return op.T(self.T(x))
+            return op.T(self.H(x))
 
         result_type = np.result_type(self.dtype, op.dtype)
 
@@ -204,7 +207,7 @@ class LinearOperator(BaseLinearOperator):
             return self(x) + other(x)
 
         def matvec_transp(x):
-            return self.T(x) + other.T(x)
+            return self.H(x) + other.T(x)
 
         result_type = np.result_type(self.dtype, other.dtype)
 
@@ -227,7 +230,7 @@ class LinearOperator(BaseLinearOperator):
             return self(x) - other(x)
 
         def matvec_transp(x):
-            return self.T(x) - other.T(x)
+            return self.H(x) - other.T(x)
 
         result_type = np.result_type(self.dtype, other.dtype)
 
