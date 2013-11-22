@@ -100,6 +100,7 @@ class LinearOperator(BaseLinearOperator):
         super(LinearOperator, self).__init__(nargin, nargout, **kwargs)
         self.__transposed = kwargs.get('transposed', False)
         transpose_of = kwargs.get('transpose_of', None)
+        matvec_transp = matvec_transp or kwargs.get('rmatvec', None)
 
         self.__matvec = matvec
 
@@ -127,12 +128,19 @@ class LinearOperator(BaseLinearOperator):
                     raise ValueError(msg)
 
         if not issubclass(np.dtype(self.__dtype).type, np.complex):
-            self.T = self.H
+            self.T = self.__H
+
+        if self.__H is not None:
+            self.rmatvec = self.__H.matvec
 
     @property
     def H(self):
         "The adjoint operator."
         return self.__H
+
+    def matvec(self, x):
+        "Matrix-vector multiplication"
+        return self.__matvec(x)
 
     def to_array(self):
         n,m = self.shape
@@ -181,7 +189,7 @@ class LinearOperator(BaseLinearOperator):
         "Product between a linear operator and a vector."
         self._nMatvec += 1
         result_type = np.result_type(self.dtype, x.dtype)
-        return self.__matvec(x).astype(result_type)
+        return self.matvec(x).astype(result_type)
 
     def __mul__(self, x):
         if np.isscalar(x):
