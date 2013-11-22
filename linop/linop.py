@@ -165,9 +165,7 @@ class LinearOperator(BaseLinearOperator):
         except ValueError:
             msg = 'output array size incompatible with operator dimensions'
             raise ValueError(msg)
-        if y.dtype != self.dtype:
-            msg = 'output array dtype does not match operator dtype'
-            raise ValueError(msg)
+        y = y.astype(self.dtype)
 
         return y
 
