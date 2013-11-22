@@ -127,11 +127,11 @@ class LinearOperator(BaseLinearOperator):
                     msg += ' Got ' + str(transpose_of.__class__)
                     raise ValueError(msg)
 
-        if not issubclass(np.dtype(self.__dtype).type, np.complex):
-            self.T = self.__H
-
         if self.__H is not None:
             self.rmatvec = self.__H.matvec
+
+        if not issubclass(np.dtype(self.dtype).type, np.complex):
+            self.T = self.__H
 
     @property
     def H(self):
@@ -165,7 +165,7 @@ class LinearOperator(BaseLinearOperator):
         except ValueError:
             msg = 'output array size incompatible with operator dimensions'
             raise ValueError(msg)
-        if y.dtype != self.dtype
+        if y.dtype != self.dtype:
             msg = 'output array dtype does not match operator dtype'
             raise ValueError(msg)
 

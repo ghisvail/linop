@@ -1,5 +1,5 @@
-from pykrylov.linop import BaseLinearOperator, LinearOperator
-from pykrylov.linop import ShapeError, null_log
+from linop import BaseLinearOperator, LinearOperator
+from linop import ShapeError, null_log
 import numpy as np
 import itertools
 
