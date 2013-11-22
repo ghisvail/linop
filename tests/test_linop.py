@@ -61,7 +61,40 @@ class TestLinearOperator(TestCase):
                 assert_(A.T is A.H)
 
     def test_runtime(self):
-        pass
+        matvecs = get_matvecs(self.A)
+        A = lo.LinearOperator(nargin=matvecs['shape'][1],
+                                nargout=matvecs['shape'][0],
+                                matvec=matvecs['matvec'],
+                                matvec_transp=matvecs['rmatvec'])
+
+        x1 = np.array([1, 1, 1])
+        A_x1 = np.array([6, 15])
+        assert_equal(A*x1, A_x1)
+        assert_equal(A.matvec(x1), A_x1)
+        assert_equal(A.matvec(x1.tolist()), A_x1)
+
+        x2 = np.array([1, 1])
+        AT_x2 = np.array([5, 7, 9])
+        assert_equal(A.T*x2, AT_x2)
+
+        assert_(isinstance(2*A, lo.LinearOperator))
+        assert_equal((2*A)*x1, 2*A_x1)
+
+        assert_(isinstance(A*2, lo.LinearOperator))
+        assert_equal((2*A)*x1, (A*2)*x1)
+
+        assert_(isinstance(-A, lo.LinearOperator))
+        assert_equal((-A)*x1, [-6, -15])
+
+        assert_(isinstance(A-A, lo.LinearOperator))
+        assert_equal((A-A)*x1, [0, 0])
+
+        #assert_(isinstance(A/2, lo.LinearOperator))
+        #assert_equal((A/3)*x1, [2, 5])
+
+        #assert_(isinstance(A**2, lo.LinearOperator))
+        #assert_equal((A**2)*x1, [36, 225])
+
 
     def test_errors(self):
         pass
