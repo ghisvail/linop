@@ -180,19 +180,22 @@ class LinearOperator(BaseLinearOperator):
 
     def __mul_scalar(self, x):
         "Product between a linear operator and a scalar."
-        def matvec(y):
-            return x * (self(y))
+        if x != 0:
+            def matvec(y):
+                return x * (self(y))
 
-        def matvec_transp(y):
-            return x * (self.H(y))
+            def matvec_transp(y):
+                return x * (self.H(y))
 
-        result_type = np.result_type(self.dtype, type(x))
+            result_type = np.result_type(self.dtype, type(x))
 
-        return LinearOperator(self.nargin, self.nargout,
-                              symmetric=self.symmetric,
-                              matvec=matvec,
-                              matvec_transp=matvec_transp,
-                              dtype=result_type)
+            return LinearOperator(self.nargin, self.nargout,
+                                symmetric=self.symmetric,
+                                matvec=matvec,
+                                matvec_transp=matvec_transp,
+                                dtype=result_type)
+        else:
+            return ZeroOperator(self.nargin, self.nargout)
 
     def __mul_linop(self, op):
         "Product between two linear operators."
@@ -222,11 +225,12 @@ class LinearOperator(BaseLinearOperator):
     def __mul__(self, x):
         if np.isscalar(x):
             return self.__mul_scalar(x)
-        if isinstance(x, BaseLinearOperator):
+        elif isinstance(x, BaseLinearOperator):
             return self.__mul_linop(x)
-        if isinstance(x, np.ndarray):
+        elif isinstance(x, np.ndarray):
             return self.__mul_vector(x)
-        raise ValueError('Cannot multiply')
+        else:
+            raise ValueError('Cannot multiply')
 
     def __rmul__(self, x):
         if np.isscalar(x):
@@ -277,15 +281,16 @@ class LinearOperator(BaseLinearOperator):
                                   dtype=result_type)
 
     def __truediv__(self, other):
-        if not np.isscalar(other):
+        if np.isscalar(other):
+            return self * (1 / other)
+        else:
             raise ValueError('Cannot divide')
-        return self * (1 / other)
 
     def __pow__(self, other):
         if not isinstance(other, int):
-            raise ShapeError('Can only raise to integer power')
+            raise ValueError('Can only raise to integer power')
         if other < 0:
-            raise ShapeError('Can only raise to nonnegative power')
+            raise ValueError('Can only raise to nonnegative power')
         if self.nargin != self.nargout:
             raise ShapeError('Can only raise square operators to a power')
         if other == 0:
