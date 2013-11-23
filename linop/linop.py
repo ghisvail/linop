@@ -1,3 +1,4 @@
+from __future__ import division
 import numpy as np
 import logging
 
@@ -275,10 +276,10 @@ class LinearOperator(BaseLinearOperator):
                                   matvec_transp=matvec_transp,
                                   dtype=result_type)
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         if not np.isscalar(other):
             raise ValueError('Cannot divide')
-        return self * (1./other)
+        return self * (1 / other)
 
     def __pow__(self, other):
         if not isinstance(other, int):
