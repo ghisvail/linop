@@ -4,6 +4,7 @@ from __future__ import division
 from numpy.testing import TestCase, assert_, assert_equal, assert_raises
 import numpy as np
 import linop as lo
+from linop import ShapeError
 
 
 def get_matvecs(A):
@@ -67,37 +68,66 @@ class TestLinearOperator(TestCase):
                                 matvec=matvecs['matvec'],
                                 matvec_transp=matvecs['rmatvec'])
 
-        x1 = np.array([1, 1, 1])
-        A_x1 = np.array([6, 15])
-        assert_equal(A*x1, A_x1)
-        assert_equal(A.matvec(x1), A_x1)
-        assert_equal(A.matvec(x1.tolist()), A_x1)
+        matvecs = get_matvecs(self.B)
+        B = lo.LinearOperator(nargin=matvecs['shape'][1],
+                                nargout=matvecs['shape'][0],
+                                matvec=matvecs['matvec'],
+                                matvec_transp=matvecs['rmatvec'])
 
-        x2 = np.array([1, 1])
-        AT_x2 = np.array([5, 7, 9])
-        assert_equal(A.T*x2, AT_x2)
+        matvecs = get_matvecs(self.C)
+        C = lo.LinearOperator(nargin=matvecs['shape'][1],
+                                nargout=matvecs['shape'][0],
+                                matvec=matvecs['matvec'],
+                                matvec_transp=matvecs['rmatvec'])
 
-        assert_(isinstance(2*A, lo.LinearOperator))
-        assert_equal((2*A)*x1, 2*A_x1)
+        u = np.array([1, 1])
+        v = np.array([1, 1, 1])
+        assert_equal(A*v, [6, 15])
+        assert_equal(A*v, A.matvec([1, 1 ,1]))
+        assert_equal(A.H*u, [5, 7, 9])
+        assert_equal(A.H*u, A.rmatvec(u))
+        assert_equal((A*2)*v, A*(2*v))
+        assert_equal((A*2)*v, (2*A)*v)
+        assert_equal((A/2)*v, A*(v/2))
+        assert_equal((-A)*v, A*(-v))
+        assert_equal((A-A)*v, [0, 0])
+        assert_equal((C**2)*u, [17, 37])
+        assert_equal((C**2)*u, (C*C)*u)
 
-        assert_(isinstance(A*2, lo.LinearOperator))
-        assert_equal((2*A)*x1, (A*2)*x1)
-
-        assert_(isinstance(-A, lo.LinearOperator))
-        assert_equal((-A)*x1, [-6, -15])
-
+        assert_(isinstance(A+A, lo.LinearOperator))
         assert_(isinstance(A-A, lo.LinearOperator))
-        assert_equal((A-A)*x1, [0, 0])
+        assert_(isinstance(-A, lo.LinearOperator))
+        assert_(isinstance(2*A, lo.LinearOperator))
+        assert_(isinstance(A*2, lo.LinearOperator))
+        assert_(isinstance(A*0, lo.ZeroOperator))
+        assert_(isinstance(A/2, lo.LinearOperator))
+        assert_(isinstance(C**2, lo.LinearOperator))
+        assert_(isinstance(C**0, lo.IdentityOperator))
 
-        #assert_(isinstance(A/2, lo.LinearOperator))
-        #assert_equal((A/3)*x1, [2, 5])
+        sum_A = lambda x: A+x
+        assert_raises(ValueError, sum_A, 3)
+        assert_raises(ValueError, sum_A, v)
+        assert_raises(ShapeError, sum_A, B)
 
-        #assert_(isinstance(A**2, lo.LinearOperator))
-        #assert_equal((A**2)*x1, [36, 225])
+        sub_A = lambda x: A-x
+        assert_raises(ValueError, sub_A, 3)
+        assert_raises(ValueError, sub_A, v)
+        assert_raises(ShapeError, sub_A, B)
 
+        mul_A = lambda x: A*x
+        assert_raises(ValueError, mul_A, u)
+        assert_raises(ShapeError, mul_A, A)
 
-    def test_errors(self):
-        pass
+        div_A = lambda x: A/x
+        assert_raises(ValueError, div_A, B)
+        assert_raises(ValueError, div_A, u)
+        assert_raises(ZeroDivisionError, div_A, 0)
+
+        pow_A = lambda x: A**x
+        pow_C = lambda x: C**x
+        assert_raises(ShapeError, pow_A, 2)
+        assert_raises(ValueError, pow_C, -2)
+        assert_raises(ValueError, pow_C, 2.1)
 
 
 class TestIdentityOperator(TestCase):
