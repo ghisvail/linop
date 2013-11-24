@@ -230,4 +230,12 @@ class TestPysparseLinearOperator(TestCase):
 
 
 class TestLinearOperatorFromArray(TestCase):
-    pass
+    def test_runtime(self):
+        A = np.array([[1, 2, 3],
+                     [4, 5, 6]])
+        A_as_op = lo.linop_from_ndarray(A)
+        assert_(isinstance(A_as_op, lo.LinearOperator))
+        x = np.array([1, 1, 1])
+        assert_equal(A_as_op*x, A.dot(x))
+        x = np.array([1, 1])
+        assert_equal(A_as_op.H*x, A.T.dot(x))
