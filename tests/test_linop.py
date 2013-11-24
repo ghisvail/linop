@@ -14,7 +14,18 @@ def get_matvecs(A):
 
 
 def get_dtypes():
-    return (np.int64, np.float64, np.complex128)
+    return ((np.int64, np.int64),
+            (np.uint64, np.uint64),
+            (np.float64, np.float64),
+            (np.complex128, np.complex128),
+            (np.float32, np.float32),
+            (np.uint64, np.int64),
+            (np.int64, np.uint64),
+            (np.float32, np.float64),
+            (np.float64, np.float32),
+            (np.float64, np.float32),
+            (np.float64, np.complex128),
+            (np.complex128, np.float64))
 
 
 class TestLinearOperator(TestCase):
@@ -49,17 +60,28 @@ class TestLinearOperator(TestCase):
                                 rmatvec=matvecs['rmatvec'])
         assert_(hasattr(A, 'rmatvec'))
 
-        for dtype in get_dtypes():
-            A = lo.LinearOperator(nargin=matvecs['shape'][1],
-                                    nargout=matvecs['shape'][0],
-                                    matvec=matvecs['matvec'],
-                                    rmatvec=matvecs['rmatvec'],
-                                    dtype=dtype)
-            if issubclass(A.dtype, np.complex):
-                assert_(not hasattr(A, 'T'))
-            else:
-                assert_(hasattr(A, 'T'))
-                assert_(A.T is A.H)
+        A = lo.LinearOperator(nargin=matvecs['shape'][1],
+                              nargout=matvecs['shape'][0],
+                              matvec=matvecs['matvec'],
+                              rmatvec=matvecs['rmatvec'],
+                              dtype=np.int64)
+        assert_(hasattr(A, 'T'))
+        assert_(A.T is A.H)
+
+        A = lo.LinearOperator(nargin=matvecs['shape'][1],
+                              nargout=matvecs['shape'][0],
+                              matvec=matvecs['matvec'],
+                              rmatvec=matvecs['rmatvec'],
+                              dtype=np.float64)
+        assert_(hasattr(A, 'T'))
+        assert_(A.T is A.H)
+
+        A = lo.LinearOperator(nargin=matvecs['shape'][1],
+                              nargout=matvecs['shape'][0],
+                              matvec=matvecs['matvec'],
+                              rmatvec=matvecs['rmatvec'],
+                              dtype=np.complex128)
+        assert_(not hasattr(A, 'T'))
 
     def test_runtime(self):
         matvecs = get_matvecs(self.A)
@@ -128,6 +150,20 @@ class TestLinearOperator(TestCase):
         assert_raises(ShapeError, pow_A, 2)
         assert_raises(ValueError, pow_C, -2)
         assert_raises(ValueError, pow_C, 2.1)
+
+    def test_dtypes(self):
+        for dtypes in get_dtypes():
+            dtype_op, dtype_in = dtypes
+            dtype_out = np.result_type(dtype_op, dtype_in)
+
+            matvecs = get_matvecs(self.A)
+            A = lo.LinearOperator(nargin=matvecs['shape'][1],
+                                  nargout=matvecs['shape'][0],
+                                  matvec=matvecs['matvec'],
+                                  matvec_transp=matvecs['rmatvec'],
+                                  dtype=dtype_op)
+            x = np.array([1, 1, 1]).astype(dtype_in)
+            assert_((A*x).dtype == dtype_out)
 
 
 class TestIdentityOperator(TestCase):
