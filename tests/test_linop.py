@@ -167,7 +167,19 @@ class TestLinearOperator(TestCase):
 
 
 class TestIdentityOperator(TestCase):
-    pass
+    def test_runtime(self):
+        A = lo.IdentityOperator(3)
+        x = np.array([1, 1, 1])
+        assert_equal(A*x, x)
+        assert_(A.H is A)
+
+    def test_dtypes(self):
+        for dtypes in get_dtypes():
+            dtype_op, dtype_in = dtypes
+            dtype_out = np.result_type(dtype_op, dtype_in)
+            A = lo.IdentityOperator(3, dtype=dtype_op)
+            x = np.array([1, 1, 1]).astype(dtype_in)
+            assert_((A*x).dtype == dtype_out)
 
 
 class TestDiagonalOperator(TestCase):
