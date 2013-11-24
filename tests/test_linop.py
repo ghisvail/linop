@@ -186,7 +186,8 @@ class TestDiagonalOperator(TestCase):
     def test_runtime(self):
         A = lo.DiagonalOperator([1, 2, 3])
         x = np.array([1, 1, 1])
-        assert_equal(A*x, diag)
+        assert_equal(A*x, [1, 2, 3])
+        assert_equal(A.H*x, [1, 2, 3])
         assert_(A.H is A)
 
     def test_dtypes(self):
@@ -200,7 +201,20 @@ class TestDiagonalOperator(TestCase):
 
 
 class TestZeroOperator(TestCase):
-    pass
+    def test_runtime(self):
+        A = lo.ZeroOperator(2, 3)
+        x = np.array([1, 1])
+        assert_equal(A*x, [0, 0, 0])
+        x = np.array([1, 1, 1])
+        assert_equal(A.H*x, [0, 0])
+
+    def test_dtypes(self):
+        for dtypes in get_dtypes():
+            dtype_op, dtype_in = dtypes
+            dtype_out = np.result_type(dtype_op, dtype_in)
+            A = lo.ZeroOperator(3, 3, dtype=dtype_op)
+            x = np.array([1, 1, 1]).astype(dtype_in)
+            assert_((A*x).dtype == dtype_out)
 
 
 class TestReducedLinearOperator(TestCase):
