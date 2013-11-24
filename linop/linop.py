@@ -388,7 +388,7 @@ def ReducedLinearOperator(op, row_indices, col_indices):
 
     def matvec_transp(x):
         z = np.zeros(m, dtype=x.dtype) ; z[row_indices] = x[:]
-        y = op.T * z
+        y = op.H * z
         return y[col_indices]
 
     return LinearOperator(nargin, nargout, matvec=matvec, symmetric=False,
