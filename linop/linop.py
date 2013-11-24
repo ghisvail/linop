@@ -166,7 +166,6 @@ class LinearOperator(BaseLinearOperator):
         except ValueError:
             msg = 'output array size incompatible with operator dimensions'
             raise ValueError(msg)
-        y = y.astype(self.dtype)
 
         return y
 
