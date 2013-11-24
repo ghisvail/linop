@@ -183,7 +183,20 @@ class TestIdentityOperator(TestCase):
 
 
 class TestDiagonalOperator(TestCase):
-    pass
+    def test_runtime(self):
+        A = lo.DiagonalOperator([1, 2, 3])
+        x = np.array([1, 1, 1])
+        assert_equal(A*x, diag)
+        assert_(A.H is A)
+
+    def test_dtypes(self):
+        for dtypes in get_dtypes():
+            dtype_op, dtype_in = dtypes
+            dtype_out = np.result_type(dtype_op, dtype_in)
+            diag = np.array([1, 2, 3]).astype(dtype_op)
+            A = lo.DiagonalOperator(diag)
+            x = np.array([1, 1, 1]).astype(dtype_in)
+            assert_((A*x).dtype == dtype_out)
 
 
 class TestZeroOperator(TestCase):
