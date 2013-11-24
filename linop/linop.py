@@ -380,12 +380,12 @@ def ReducedLinearOperator(op, row_indices, col_indices):
     m, n = op.shape    # Shape of non-reduced operator.
 
     def matvec(x):
-        z = np.zeros(n) ; z[col_indices] = x[:]
+        z = np.zeros(n, dtype=x.dtype) ; z[col_indices] = x[:]
         y = op * z
         return y[row_indices]
 
     def matvec_transp(x):
-        z = np.zeros(m) ; z[row_indices] = x[:]
+        z = np.zeros(m, dtype=x.dtype) ; z[row_indices] = x[:]
         y = op.T * z
         return y[col_indices]
 
@@ -403,12 +403,12 @@ def SymmetricallyReducedLinearOperator(op, indices):
     m, n = op.shape    # Shape of non-reduced operator.
 
     def matvec(x):
-        z = np.zeros(n) ; z[indices] = x[:]
+        z = np.zeros(n, dtype=x.dtype) ; z[indices] = x[:]
         y = op * z
         return y[indices]
 
     def matvec_transp(x):
-        z = np.zeros(m) ; z[indices] = x[:]
+        z = np.zeros(m, dtype=x.dtype) ; z[indices] = x[:]
         y = op * z
         return y[indices]
 
