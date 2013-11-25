@@ -5,6 +5,7 @@ import itertools
 
 
 class BlockLinearOperator(LinearOperator):
+
     """
     A linear operator defined by blocks. Each block must be a linear operator.
 
@@ -15,6 +16,7 @@ class BlockLinearOperator(LinearOperator):
     If the overall linear operator is symmetric, only its upper triangle
     need be specified, e.g., `[[A,B,C], [D,E], [F]]`, and the blocks on the
     diagonal must be square and symmetric.
+
     """
 
     def __init__(self, blocks, symmetric=False, **kwargs):
@@ -32,7 +34,7 @@ class BlockLinearOperator(LinearOperator):
 
             self._blocks = blocks[:]
             for i in range(1, nrow):
-                for j in range(i-1,-1,-1):
+                for j in range(i - 1, -1, -1):
                     self._blocks[i].insert(0, self._blocks[j][i].T)
 
         else:
@@ -95,17 +97,18 @@ class BlockLinearOperator(LinearOperator):
         blk_dtypes = [blk.dtype for blk in flat_blocks]
         op_dtype = np.result_type(*blk_dtypes)
 
-        super(BlockLinearOperator, self).__init__(nargin, nargout,
-                                symmetric=symmetric,
-                                matvec=lambda x: blk_matvec(x, self._blocks),
-                                matvec_transp=lambda x: blk_matvec(x, blocksT),
-                                dtype=op_dtype)
+        super(BlockLinearOperator, self).__init__(
+            nargin, nargout,
+            symmetric=symmetric,
+            matvec=lambda x: blk_matvec(x, self._blocks),
+            matvec_transp=lambda x: blk_matvec(x, blocksT),
+            dtype=op_dtype)
 
         self.H._blocks = blocksT
 
     @property
     def blocks(self):
-        "The list of blocks defining the block operator."
+        """The list of blocks defining the block operator."""
         return self._blocks
 
     def __getitem__(self, indices):
@@ -125,14 +128,18 @@ class BlockLinearOperator(LinearOperator):
 
 
 class BlockDiagonalLinearOperator(LinearOperator):
+
     """
-    A block diagonal linear operator. Each block must be a linear operator.
+    A block diagonal linear operator.
+
+    Each block must be a linear operator.
     The blocks may be specified as one list, e.g., `[A, B, C]`.
+
     """
 
     def __init__(self, blocks, **kwargs):
 
-        symmetric = reduce(lambda x,y: x and y,
+        symmetric = reduce(lambda x, y: x and y,
                            [blk.symmetric for blk in blocks])
 
         self._blocks = blocks
@@ -187,17 +194,18 @@ class BlockDiagonalLinearOperator(LinearOperator):
         blk_dtypes = [blk.dtype for blk in blocks]
         op_dtype = np.result_type(*blk_dtypes)
 
-        super(BlockDiagonalLinearOperator, self).__init__(nargin, nargout,
-                                symmetric=symmetric,
-                                matvec=lambda x: blk_matvec(x, self._blocks),
-                                matvec_transp=lambda x: blk_matvec(x, blocksT),
-                                dtype=op_dtype)
+        super(BlockDiagonalLinearOperator, self).__init__(
+            nargin, nargout,
+            symmetric=symmetric,
+            matvec=lambda x: blk_matvec(x, self._blocks),
+            matvec_transp=lambda x: blk_matvec(x, blocksT),
+            dtype=op_dtype)
 
         self.H._blocks = blocksT
 
     @property
     def blocks(self):
-        "The list of blocks defining the block diagonal operator."
+        """The list of blocks defining the block diagonal operator."""
         return self._blocks
 
     def __getitem__(self, idx):
@@ -211,28 +219,34 @@ class BlockDiagonalLinearOperator(LinearOperator):
             if isinstance(ops, list) or isinstance(ops, tuple):
                 for op in ops:
                     if not isinstance(op, BaseLinearOperator):
-                        msg  = 'Block operators can only contain'
+                        msg = 'Block operators can only contain'
                         msg += ' linear operators'
                         raise ValueError(msg)
         self._blocks[idx] = ops
 
 
 class BlockPreconditioner(BlockLinearOperator):
-    """
-    An alias for ``BlockLinearOperator`` with a ``solve`` method equivalent to
-    ``__mul__``.
+
+    """An alias for ``BlockLinearOperator``.
+
+    Holds an additional ``solve`` method equivalent to ``__mul__``.
+
     """
 
     def solve(self, x):
+        """An alias to __call__."""
         return self.__call__(x)
 
 
 class BlockDiagonalPreconditioner(BlockDiagonalLinearOperator):
+
     """
-    An alias for ``BlockDiagonalLinearOperator`` with a ``solve`` method
-    equivalent to ``__mul__``.
+    An alias for ``BlockDiagonalLinearOperator``.
+
+    Holds an additional ``solve`` method equivalent to ``__mul__``.
+
     """
 
     def solve(self, x):
+        """An alias to __call__."""
         return self.__call__(x)
-
