@@ -355,6 +355,44 @@ class DiagonalOperator(LinearOperator):
                                                **kwargs)
 
 
+class MatrixOperator(LinearOperator):
+
+    """
+    Class representing a matrix operator.
+
+    A linear operator wrapping the multiplication with a matrix and its
+    transpose (real) or conjugate transpose (complex). The operator's dtype
+    is the same as the specified `matrix` argument.
+
+    """
+
+    def __init__(self, matrix, **kwargs):
+        if 'symmetric' in kwargs:
+            kwargs.pop('symmetric')
+        if 'matvec' in kwargs:
+            kwargs.pop('matvec')
+        if 'dtype' in kwargs:
+            kwargs.pop('dtype')
+
+        matrix = np.asarray(matrix)
+        if matrix.ndim != 2:
+            msg = "matrix must be 2-d (shape can be [M, N], [M, 1] or [1, N])"
+            raise ValueError(msg)
+
+        matvec = lambda x: matrix.dot(x)
+        if not issubclass(np.dtype(matrix.dtype).type, np.complex):
+            matvec_transp = lambda x: matrix.T.dot(x)
+        else:
+            matvec_transp = lambda x: matrix.T.conj().dot(x)
+
+        super(MatrixOperator, self).__init__(matrix.shape[1], matrix.shape[0],
+                                             symmetric=False,
+                                             matvec=matvec,
+                                             matvec_transp=matvec_transp,
+                                             dtype=matrix.dtype,
+                                             **kwargs)
+
+
 class ZeroOperator(LinearOperator):
 
     """Class representing the zero operator of shape `nargout`-by-`nargin`."""

@@ -200,6 +200,30 @@ class TestDiagonalOperator(TestCase):
             assert_((A * x).dtype == dtype_out)
 
 
+class TestMatrixOperator(TestCase):
+    def test_runtime(self):
+        A = lo.MatrixOperator(np.outer(np.arange(3), np.arange(1, 4)))
+        x = np.array([1, 1, 1])
+        assert_equal(A * x, [0, 6, 12])
+        assert_equal(A.H * x, [3, 6, 9])
+        A = lo.MatrixOperator(np.outer(np.arange(3), 1j * np.arange(1, 4)))
+        x = np.array([1, 1, 1])
+        assert_equal(A * x, np.array([0j, 6j, 12j]))
+        assert_equal(A.H * x, np.array([-3j, -6j, -9j]))
+        assert_raises(ValueError, lo.MatrixOperator, 8)
+        assert_raises(ValueError, lo.MatrixOperator, np.arange(8))
+        assert_raises(ValueError, lo.MatrixOperator, np.arange(8).reshape([2, 2, 2]))
+
+    def test_dtypes(self):
+        for dtypes in get_dtypes():
+            dtype_op, dtype_in = dtypes
+            dtype_out = np.result_type(dtype_op, dtype_in)
+            matrix = np.atleast_2d(np.array([1, 2, 3])).astype(dtype_op)
+            A = lo.MatrixOperator(matrix)
+            x = np.array([1, 1, 1]).astype(dtype_in)
+            assert_((A * x).dtype == dtype_out)
+
+
 class TestZeroOperator(TestCase):
     def test_runtime(self):
         A = lo.ZeroOperator(2, 3)
