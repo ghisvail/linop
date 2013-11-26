@@ -347,6 +347,9 @@ class DiagonalOperator(LinearOperator):
             kwargs.pop('dtype')
 
         diag = np.asarray(diag)
+        if diag.ndim != 1:
+            msg = "diag array must be 1-d"
+            raise ValueError(msg)
 
         super(DiagonalOperator, self).__init__(diag.shape[0], diag.shape[0],
                                                symmetric=True,

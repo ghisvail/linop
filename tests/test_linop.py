@@ -189,6 +189,8 @@ class TestDiagonalOperator(TestCase):
         assert_equal(A * x, [1, 2, 3])
         assert_equal(A.H * x, [1, 2, 3])
         assert_(A.H is A)
+        assert_raises(ValueError, lo.DiagonalOperator, 10)
+        assert_raises(ValueError, lo.DiagonalOperator, np.eye(3))
 
     def test_dtypes(self):
         for dtypes in get_dtypes():
