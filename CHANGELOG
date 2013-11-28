@@ -1,3 +1,10 @@
+version 0.3
+-----------
+ * add MatrixOperator
+ * add documentation
+ * bug fixes
+ * pep8 fixes
+
 version 0.2
 -----------
  * add test suite for main operators
