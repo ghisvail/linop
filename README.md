@@ -36,7 +36,7 @@ Documentation
 =============
 
 The package documentation can be found 
-[here](http://dpo.github.com/pykrylov). The documentation can be built 
+[here](http://pythonhosted.org/linop/). The documentation can be built 
 using Sphinx. From the root of the source directory, do::
 
     cd doc
