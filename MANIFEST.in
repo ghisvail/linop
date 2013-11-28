@@ -1,3 +1,4 @@
+include AUTHORS
 include CHANGELOG
 include COPYING
 include README.md
