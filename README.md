@@ -5,7 +5,7 @@ linop
 linop: a Pythonic abstraction for linear mathematical operators
 
 A friendy fork from the linop module of the 
-`pykrylov <https://github.com/dpo/pykrylov>`_ package, developped by 
+[pykrylov](https://github.com/dpo/pykrylov) package, developped by 
 Dominique Orban <dominique.orban@gmail.com>.
 
 This project means to provde a standalone set of classes to abstract the 
@@ -16,8 +16,8 @@ the development of advanced mathematical frameworks.
 Requirements
 ============
 
-*. `Python <http://www.python.org>`_ 2.7 (support for Python 3 is coming)
-*. `NumPy <http://www.scipy.org/NumPy>`_
+* [Python](http://www.python.org>) 2.7 (support for Python 3 is coming)
+* [NumPy](http://www.scipy.org/NumPy)
 
 
 Installation
@@ -36,7 +36,7 @@ Documentation
 =============
 
 The package documentation can be found 
-`here <http://dpo.github.com/pykrylov>`_. The documentation can be built 
+[here](http://dpo.github.com/pykrylov). The documentation can be built 
 using Sphinx. From the root of the source directory, do::
 
     cd doc
@@ -48,7 +48,7 @@ The html documentation will be available in doc/build/html.
 Changelog
 =========
 
-See the CHANGELOG file.
+See the [CHANGELOG](./CHANGELOG) file.
 
 
 Contributing
@@ -59,4 +59,4 @@ to contribute to the improvement of the existing code base, ideally by filing
 an issue to the bug tracker, cloning the repository and submitting a pull 
 request.
 
-A list of contributors will be updated in the AUTHORS file.
+A list of contributors will be updated in the [AUTHORS](./AUTHORS) file.
