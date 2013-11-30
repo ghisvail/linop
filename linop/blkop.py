@@ -250,3 +250,35 @@ class BlockDiagonalPreconditioner(BlockDiagonalLinearOperator):
     def solve(self, x):
         """An alias to __call__."""
         return self.__call__(x)
+
+
+class BlockHorizontalLinearOperator(BlockLinearOperator):
+
+    """
+    A block horizontal linear operator.
+
+    Each block must be a linear operator.
+    The blocks must be specified as one list, e.g., `[A, B, C]`.
+
+    """
+
+    def __init__(self, blocks, **kwargs):
+
+        super(BlockHorizontalLinearOperator, self).__init__(
+            blocks=[[blk for blk in blocks]])
+
+
+class BlockVerticalLinearOperator(BlockLinearOperator):
+
+    """
+    A block vertical linear operator.
+
+    Each block must be a linear operator.
+    The blocks must be specified as one list, e.g., `[A, B, C]`.
+
+    """
+
+    def __init__(self, blocks, **kwargs):
+
+        super(BlockVerticalLinearOperator, self).__init__(
+            blocks=[[blk] for blk in blocks])
