@@ -22,6 +22,13 @@ class BlockLinearOperator(LinearOperator):
     def __init__(self, blocks, symmetric=False, **kwargs):
         # If building a symmetric operator, fill in the blanks.
         # They're just references to existing objects.
+        try:
+            for block_row in blocks:
+                for block_col in block_row:
+                    op_shape = block_col.shape
+        except (TypeError, AttributeError):
+            raise ValueError('blocks should be a nested list of operators')
+
         if symmetric:
             nrow = len(blocks)
             ncol = len(blocks[0])
@@ -141,10 +148,13 @@ class BlockDiagonalLinearOperator(LinearOperator):
     def __init__(self, blocks, **kwargs):
 
         try:
-            symmetric = reduce(lambda x, y: x and y,
-                            [blk.symmetric for blk in blocks])
-        except AttributeError:
+            for block in blocks:
+                op_shape = block.shape
+        except (TypeError, AttributeError):
             raise ValueError('blocks should be a flattened list of operators')
+
+        symmetric = reduce(
+            lambda x, y: x and y, [blk.symmetric for blk in blocks])
 
         self._blocks = blocks
 
@@ -268,6 +278,12 @@ class BlockHorizontalLinearOperator(BlockLinearOperator):
 
     def __init__(self, blocks, **kwargs):
 
+        try:
+            for block in blocks:
+                op_shape = block.shape
+        except (TypeError, AttributeError):
+            raise ValueError('blocks should be a flattened list of operators')
+
         super(BlockHorizontalLinearOperator, self).__init__(
             blocks=[[blk for blk in blocks]])
 
@@ -283,6 +299,12 @@ class BlockVerticalLinearOperator(BlockLinearOperator):
     """
 
     def __init__(self, blocks, **kwargs):
+
+        try:
+            for block in blocks:
+                op_shape = block.shape
+        except (TypeError, AttributeError):
+            raise ValueError('blocks should be a flattened list of operators')
 
         super(BlockVerticalLinearOperator, self).__init__(
             blocks=[[blk] for blk in blocks])
