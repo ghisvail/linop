@@ -284,8 +284,10 @@ class BlockHorizontalLinearOperator(BlockLinearOperator):
         except (TypeError, AttributeError):
             raise ValueError('blocks should be a flattened list of operators')
 
+        blocks=[[blk for blk in blocks]]
+
         super(BlockHorizontalLinearOperator, self).__init__(
-            blocks=[[blk for blk in blocks]])
+            blocks=blocks, symmetric=False, **kwargs)
 
 
 class BlockVerticalLinearOperator(BlockLinearOperator):
@@ -306,5 +308,7 @@ class BlockVerticalLinearOperator(BlockLinearOperator):
         except (TypeError, AttributeError):
             raise ValueError('blocks should be a flattened list of operators')
 
+        blocks=[[blk] for blk in blocks]
+
         super(BlockVerticalLinearOperator, self).__init__(
-            blocks=[[blk] for blk in blocks])
+            blocks=blocks, symmetric=False, **kwargs)
