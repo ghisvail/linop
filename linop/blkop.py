@@ -140,8 +140,11 @@ class BlockDiagonalLinearOperator(LinearOperator):
 
     def __init__(self, blocks, **kwargs):
 
-        symmetric = reduce(lambda x, y: x and y,
-                           [blk.symmetric for blk in blocks])
+        try:
+            symmetric = reduce(lambda x, y: x and y,
+                            [blk.symmetric for blk in blocks])
+        except AttributeError:
+            raise ValueError('blocks should be a flattened list of operators')
 
         self._blocks = blocks
 
