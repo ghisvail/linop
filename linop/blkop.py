@@ -120,7 +120,8 @@ class BlockLinearOperator(LinearOperator):
         return BlockLinearOperator(blks.tolist(), symmetric=False)
 
     def __contains__(self, op):
-        return op in self._blocks
+        flat_blocks = list(itertools.chain(*self.blocks))
+        return op in flat_blocks
 
     def __iter__(self):
         for block in self._blocks:
