@@ -46,32 +46,35 @@ class TestBlockLinearOperator(TestCase):
 
     def test_runtime(self):
         M = bo.BlockLinearOperator([[self.A, self.B], [self.D, self.C]])
-        x = np.ones(5)
         matrix_M = np.array([[1, 0, 1, 2, 3],
                              [0, 1, 4, 5, 6],
                              [6, 5, 0, 0, 0],
                              [4, 3, 0, 1, 0],
                              [2, 1, 0, 0, 2]])
+        x = np.ones(M.shape[1])
         assert_equal(M * x, np.dot(matrix_M, x))
+        x = np.ones(M.T.shape[1])
         assert_equal(M.T * x, np.dot(matrix_M.T, x))
 
         M = bo.BlockLinearOperator([[self.A, self.B], [self.C]], symmetric=True)
-        x = np.ones(5)
         matrix_M = np.array([[1, 0, 1, 2, 3],
                              [0, 1, 4, 5, 6],
                              [1, 4, 0, 0, 0],
                              [2, 5, 0, 1, 0],
                              [3, 6, 0, 0, 2]])
+        x = np.ones(M.shape[1])
         assert_equal(M * x, np.dot(matrix_M, x))
+        x = np.ones(M.T.shape[1])
         assert_equal(M.T * x, np.dot(matrix_M.T, x))
 
         M = bo.BlockLinearOperator([[self.A, self.B], [self.A, self.B]])
-        x = np.ones(4)
         matrix_M = np.array([[1, 0, 1, 2, 3],
                              [0, 1, 4, 5, 6],
                              [1, 0, 1, 2, 3],
                              [0, 1, 4, 5, 6]])
+        x = np.ones(M.shape[1])
         assert_equal(M * x, np.dot(matrix_M, x))
+        x = np.ones(M.T.shape[1])
         assert_equal(M.T * x, np.dot(matrix_M.T, x))
 
     def test_dtypes(self):
@@ -102,13 +105,14 @@ class TestBlockDiagonalOperator(TestCase):
 
     def test_runtime(self):
         M = bo.BlockDiagonalLinearOperator([self.A, self.C])
-        x = np.ones(5)
         matrix_M = np.array([[1, 0, 0, 0, 0],
                              [0, 1, 0, 0, 0],
                              [0, 0, 0, 0, 0],
                              [0, 0, 0, 1, 0],
                              [0, 0, 0, 0, 2]])
+        x = np.ones(M.shape[1])
         assert_equal(M * x, np.dot(matrix_M, x))
+        x = np.ones(M.T.shape[1])
         assert_equal(M.T * x, np.dot(matrix_M.T, x))
 
 
@@ -134,10 +138,11 @@ class TestBlockHorizontalOperator(TestCase):
 
     def test_runtime(self):
         M = bo.BlockHorizontalLinearOperator([self.A, self.B])
-        x = np.ones(5)
         matrix_M = np.array([[1, 0, 1, 2, 3],
                              [0, 1, 4, 5, 6]])
+        x = np.ones(M.shape[1])
         assert_equal(M * x, np.dot(matrix_M, x))
+        x = np.ones(M.T.shape[1])
         assert_equal(M.T * x, np.dot(matrix_M.T, x))
 
 
@@ -163,11 +168,12 @@ class TestBlockVerticalOperator(TestCase):
 
     def test_runtime(self):
         M = bo.BlockVerticalLinearOperator([self.A, self.D])
-        x = np.ones(2)
         matrix_M = np.array([[1, 0],
                              [0, 1],
                              [6, 5],
                              [4, 3],
                              [2, 1]])
+        x = np.ones(M.shape[1])
         assert_equal(M * x, np.dot(matrix_M, x))
+        x = np.ones(M.T.shape[1])
         assert_equal(M.T * x, np.dot(matrix_M.T, x))
