@@ -109,7 +109,8 @@ class BlockLinearOperator(LinearOperator):
             symmetric=symmetric,
             matvec=lambda x: blk_matvec(x, self._blocks),
             matvec_transp=lambda x: blk_matvec(x, blocksT),
-            dtype=op_dtype)
+            dtype=op_dtype,
+            **kwargs)
 
         self.H._blocks = blocksT
 
@@ -213,7 +214,8 @@ class BlockDiagonalLinearOperator(LinearOperator):
             symmetric=symmetric,
             matvec=lambda x: blk_matvec(x, self._blocks),
             matvec_transp=lambda x: blk_matvec(x, blocksT),
-            dtype=op_dtype)
+            dtype=op_dtype,
+            **kwargs)
 
         self.H._blocks = blocksT
 
