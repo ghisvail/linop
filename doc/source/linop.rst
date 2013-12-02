@@ -150,9 +150,10 @@ symmetry as the original operator.
 
 .. autofunction:: SymmetricallyReducedLinearOperator
 
-An obvious use case of linear operators is matrices themselves! The two
-following convenience functions build linear operators from `Pysparse
-<http://pysparse.sf.net>`_ sparse matrices and from Numpy arrays.
+An obvious use case of linear operators is matrices themselves! The following 
+convenience functions allows to build linear operators from various 
+matrix-like input, such as `Pysparse <http://pysparse.sf.net>`_ sparse 
+matrices or Numpy arrays.
 
 .. autofunction:: PysparseLinearOperator
 
