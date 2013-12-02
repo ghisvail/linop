@@ -378,7 +378,9 @@ class MatrixOperator(LinearOperator):
         if 'dtype' in kwargs:
             kwargs.pop('dtype')
 
-        matrix = np.asarray(matrix)
+        if not hasattr(matrix, 'ndim'):
+            matrix = np.asanyarray(matrix)
+
         if matrix.ndim != 2:
             msg = "matrix must be 2-d (shape can be [M, N], [M, 1] or [1, N])"
             raise ValueError(msg)
@@ -539,7 +541,7 @@ def PysparseLinearOperator(A):
 def linop_from_ndarray(A):
     """
     Return a linear operator from a Numpy `ndarray`.
-    
+
     .. deprecated:: 0.4
         Use :class:`MatrixOperator` or :func:`aslinearoperator` instead.
     """
@@ -548,3 +550,55 @@ def linop_from_ndarray(A):
                           matvec_transp=lambda u: np.dot(A.T, u),
                           symmetric=False,
                           dtype=A.dtype)
+
+
+def aslinearoperator(A):
+    """Return A as a LinearOperator.
+
+    'A' may be any of the following types:
+    - linop.LinearOperator
+    - scipy.LinearOperator
+    - ndarray
+    - matrix
+    - sparse matrix (e.g. csr_matrix, lil_matrix, etc.)
+    - any object with .shape and .matvec attributes
+
+    See the :class:`LinearOperator` documentation for additonal information.
+
+    .. versionadded:: 0.4
+
+    """
+    from scipy.sparse import isspmatrix
+
+    if isinstance(A, LinearOperator):
+        return A
+
+    elif isinstance(A, np.ndarray) or isinstance(A, np.matrix):
+        return MatrixOperator(A)
+
+    elif isspmatrix(A):
+        return MatrixOperator(A)
+
+    elif hasattr(A, 'shape') and hasattr(A, 'matvec'):
+
+        if hasattr(A, 'matvec_transp'):
+            matvec_transp = A.matvec_transp
+        elif hasattr(A, 'rmatvec'):
+            matvec_transp = A.rmatvec
+        else:
+            matvec_transp = None
+
+        if hasattr(A, 'dtype'):
+            dtype = A.dtype
+        else:
+            dtype = None
+
+        matvec = A.matvec
+        nargout, nargin = A.shape
+
+        return LinearOperator(
+            nargin, nargout, symmetric=False, matvec=matvec,
+            matvec_transp=matvec_transp, dtype=dtype)
+
+    else:
+        raise TypeError('unsupported object type')
