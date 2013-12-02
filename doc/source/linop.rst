@@ -104,6 +104,20 @@ example:
    :inherited-members:
    :undoc-members:
 
+Matrix operators wraps calls to the dot and tranposed dot product of the 
+provided Numpy array. For example: 
+
+.. code-block:: python
+
+    m = np.arange(12).reshape([4, 3])
+    M = MatrixOperator(m)
+
+.. autoclass:: MatrixOperator
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :undoc-members:
+
 Convenience Functions
 ---------------------
 
@@ -144,9 +158,7 @@ following convenience functions build linear operators from `Pysparse
 
 .. autofunction:: linop_from_ndarray
 
-Note that there is normally no need to build linear operators from Numpy
-matrices or from Scipy sparse matrices since they already support product and
-transposition.
+.. autofunction:: aslinearoperator
 
 Exceptions
 ----------

@@ -367,6 +367,7 @@ class MatrixOperator(LinearOperator):
     transpose (real) or conjugate transpose (complex). The operator's dtype
     is the same as the specified `matrix` argument.
 
+    .. versionadded:: 0.3
     """
 
     def __init__(self, matrix, **kwargs):
@@ -536,7 +537,12 @@ def PysparseLinearOperator(A):
 
 
 def linop_from_ndarray(A):
-    """Return a linear operator from a Numpy `ndarray`."""
+    """
+    Return a linear operator from a Numpy `ndarray`.
+    
+    .. deprecated:: 0.4
+        Use :class:`MatrixOperator` or :func:`aslinearoperator` instead.
+    """
     return LinearOperator(A.shape[1], A.shape[0],
                           lambda v: np.dot(A, v),
                           matvec_transp=lambda u: np.dot(A.T, u),
