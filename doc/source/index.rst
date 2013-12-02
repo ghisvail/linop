@@ -12,7 +12,9 @@ Contents
 
 .. toctree::
 
+   Introduction <intro>
    Linear Operators <linop>
+   Block Linear Operators <blkop>
 
 .. TODO List
 .. =========
