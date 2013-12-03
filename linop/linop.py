@@ -385,14 +385,20 @@ class MatrixOperator(LinearOperator):
             msg = "matrix must be 2-d (shape can be [M, N], [M, 1] or [1, N])"
             raise ValueError(msg)
 
-        matvec = lambda x: matrix.dot(x)
-        if not issubclass(np.dtype(matrix.dtype).type, np.complex):
-            matvec_transp = lambda x: matrix.T.dot(x)
+        matvec = matrix.dot
+        iscomplex = issubclass(np.dtype(matrix.dtype).type, np.complex)
+
+        symmetric = (np.all(matrix == matrix.conj().T) if iscomplex
+                     else np.all(matrix == matrix.T))
+
+        if not symmetric:
+            matvec_transp = (matrix.conj().T.dot if iscomplex
+                             else matrix.T.dot)
         else:
-            matvec_transp = lambda x: matrix.T.conj().dot(x)
+            matvec_transp = None
 
         super(MatrixOperator, self).__init__(matrix.shape[1], matrix.shape[0],
-                                             symmetric=False,
+                                             symmetric=symmetric,
                                              matvec=matvec,
                                              matvec_transp=matvec_transp,
                                              dtype=matrix.dtype,

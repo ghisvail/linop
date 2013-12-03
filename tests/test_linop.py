@@ -203,6 +203,16 @@ class TestDiagonalOperator(TestCase):
 
 
 class TestMatrixOperator(TestCase):
+    def test_init(self):
+        A_mat = np.outer(np.arange(3), np.arange(1, 4))
+        A = lo.MatrixOperator(A_mat)
+        assert_(A.shape == A_mat.shape)
+        self.assertFalse(A.symmetric)
+        A_mat = np.outer(np.arange(1, 3), np.arange(1, 3))
+        A = lo.MatrixOperator(A_mat)
+        assert_(A.shape == A_mat.shape)
+        self.assertTrue(A.symmetric)
+
     def test_runtime(self):
         A = lo.MatrixOperator(np.outer(np.arange(3), np.arange(1, 4)))
         x = np.array([1, 1, 1])
