@@ -378,7 +378,7 @@ class MatrixOperator(LinearOperator):
         if 'dtype' in kwargs:
             kwargs.pop('dtype')
 
-        if not hasattr(matrix, 'ndim'):
+        if not hasattr(matrix, 'shape'):
             matrix = np.asanyarray(matrix)
 
         if matrix.ndim != 2:
