@@ -13,7 +13,7 @@ URL = 'https://github.com/ghisvail/linop'
 LICENSE = 'LGPLv2'
 
 version = '0.4'
-release = False
+release = True
 if not release:
     version += '-dev'
 VERSION = version
