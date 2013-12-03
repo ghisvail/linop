@@ -82,6 +82,32 @@ specified as symmetric, each block must be symmetric. For example:
    :inherited-members:
    :undoc-members:
 
+Block Vertical and Horizontal Operators
+---------------------------------------
+
+Block vertical and horizontal operators are special cases of the generic block
+operator, where the list of blocks are either stacked vertically or
+horizontally. They must be defined in a flattened list.
+
+.. code-block:: python
+
+    # same result as K1
+    K6 = BlockHorizontalLinearOperator([A, B])
+    # same result as K3
+    K7 = BlockVerticalLinearOperator([A, C])
+
+.. autoclass:: BlockHorizontalLinearOperator
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :undoc-members:
+
+.. autoclass:: BlockVerticalLinearOperator
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :undoc-members:
+
 Iterating and indexing
 ----------------------
 
