@@ -151,8 +151,6 @@ class LinearOperator(BaseLinearOperator):
         """
         Matrix-vector multiplication.
 
-        Note
-        ----
         The matvec property encapsulates the matvec routine specified at
         construct time, to ensure the consistency of the input and output
         arrays with the operator's shape.
