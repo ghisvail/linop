@@ -183,6 +183,12 @@ class TestIdentityOperator(TestCase):
 
 
 class TestDiagonalOperator(TestCase):
+    def test_init(self):
+        A_diag = [1, 2, 3]
+        A = lo.DiagonalOperator(A_diag)
+        assert_(A.shape == (len(A_diag), len(A_diag)))
+        self.assertTrue(A.symmetric)
+
     def test_runtime(self):
         A = lo.DiagonalOperator([1, 2, 3])
         x = np.array([1, 1, 1])
