@@ -2,6 +2,7 @@
 
 import os
 import sys
+from setuptools import setup, find_packages
 
 
 DISTNAME = 'linop'
@@ -19,29 +20,12 @@ if not release:
 VERSION = version
 
 
-def configuration(parent_package='', top_path=None):
-    # BEFORE importing distutils, remove MANIFEST. distutils doesn't properly
-    # update it when the contents of directories change.
-    if os.path.exists('MANIFEST'):
-        os.remove('MANIFEST')
-    from numpy.distutils.misc_util import Configuration
-    config = Configuration(None, parent_package, top_path)
-    config.set_options(ignore_setup_xxx_py=True,
-                       assume_default_configuration=True,
-                       delegate_options_to_subpackages=True,
-                       quiet=True)
-    config.add_subpackage('linop')
-    return config
-
-
 try:
     import setuptools
-    extra_setuptools_args = dict(install_requires=['numpy'],
-                                 test_requires=['nose', 'numpy', 'scipy'],
+    extra_setuptools_args = dict(test_require=['nose', 'scipy'],
                                  test_suite="nose.collector",
                                  use_2to3=True,
                                  zip_safe=False)
-
 except ImportError:
     extra_setuptools_args = dict()
 
@@ -55,22 +39,25 @@ def setup_package():
                     url=URL,
                     version=VERSION,
                     long_description=LONG_DESCRIPTION,
-                    classifiers=["Development Status :: 3 - Alpha",
+                    classifiers=['Development Status :: 3 - Alpha',
                                  'Intended Audience :: Developers',
                                  'Intended Audience :: Science/Research',
                                  'License :: OSI Approved',
                                  'Programming Language :: Python',
                                  'Topic :: Scientific/Engineering',
                                  'Topic :: Software Development',
-                                 "Operating System :: OS Independent",
-                                 'Programming Language :: Python :: 2',
-                                 'Programming Language :: Python :: 2.6',
-                                 'Programming Language :: Python :: 2.7',
+                                 'Operating System :: OS Independent',
+                                 'Programming Language :: Python',
+                                 'Programming Language :: Python :: 3',
                                  ],
                     **extra_setuptools_args)
 
-    from numpy.distutils.core import setup
-    metadata['configuration'] = configuration
+    try:
+        from setuptools import setup
+    except ImportError:
+        from distutils.core import setup
+
+    metadata['packages'] = ['linop']
     setup(**metadata)
 
 
