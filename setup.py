@@ -36,11 +36,10 @@ def configuration(parent_package='', top_path=None):
 
 try:
     import setuptools
+    extra_setuptools_args = dict(use_2to3=True,
+                                 zip_safe=False)
+
 except ImportError:
-    extra_setuptools_args = dict(
-        zip_safe=False,
-    )
-else:
     extra_setuptools_args = dict()
 
 

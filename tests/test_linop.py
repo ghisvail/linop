@@ -301,7 +301,5 @@ def test_aslinearoperator():
                         ssp.csr_matrix, ssp.dia_matrix, ssp.dok_matrix,
                         ssp.lil_matrix):
         M_as_mat = sparse_type((3, 3))
-        print M_as_mat.shape
-        print M_as_mat.ndim
         A = lo.aslinearoperator(M_as_mat)
         assert_(isinstance(A, lo.LinearOperator))

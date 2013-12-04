@@ -1,7 +1,8 @@
-from linop import BaseLinearOperator, LinearOperator
-from linop import ShapeError, null_log
+from .linop import BaseLinearOperator, LinearOperator
+from .linop import ShapeError, null_log
 import numpy as np
 import itertools
+from functools import reduce
 
 
 class BlockLinearOperator(LinearOperator):
@@ -66,7 +67,7 @@ class BlockLinearOperator(LinearOperator):
         nargout = sum([out[0] for out in nargouts])
 
         # Create blocks of transpose operator.
-        blocksT = map(lambda *row: [blk.T for blk in row], *self._blocks)
+        blocksT = list(map(lambda *row: [blk.T for blk in row], *self._blocks))
 
         def blk_matvec(x, blks):
             nargins = [[blk.shape[-1] for blk in blkrow] for blkrow in blks]

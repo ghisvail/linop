@@ -180,7 +180,7 @@ class LinearOperator(BaseLinearOperator):
     def to_array(self):
         n, m = self.shape
         H = np.empty((n, m))
-        for j in xrange(m):
+        for j in range(m):
             ej = np.zeros(m)
             ej[j] = 1.0
             H[:, j] = self * ej
