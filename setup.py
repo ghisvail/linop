@@ -36,7 +36,10 @@ def configuration(parent_package='', top_path=None):
 
 try:
     import setuptools
-    extra_setuptools_args = dict(use_2to3=True,
+    extra_setuptools_args = dict(install_requires=['numpy'],
+                                 test_requires=['nose', 'numpy', 'scipy'],
+                                 test_suite="nose.collector",
+                                 use_2to3=True,
                                  zip_safe=False)
 
 except ImportError:
