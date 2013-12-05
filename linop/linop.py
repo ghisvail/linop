@@ -509,7 +509,13 @@ class ShapeError(Exception):
 
 
 def PysparseLinearOperator(A):
-    """Return a linear operator from a Pysparse sparse matrix."""
+    """
+    Return a linear operator from a Pysparse sparse matrix.
+
+    .. deprecated:: 0.6
+        Use :func:`aslinearoperator` instead.
+
+    """
 
     nargout, nargin = A.shape
     try:
@@ -585,25 +591,37 @@ def aslinearoperator(A):
     elif isspmatrix(A):
         return MatrixLinearOperator(A)
 
-    elif hasattr(A, 'shape') and hasattr(A, 'matvec'):
-
-        if hasattr(A, 'matvec_transp'):
-            matvec_transp = A.matvec_transp
-        elif hasattr(A, 'rmatvec'):
-            matvec_transp = A.rmatvec
-        else:
-            matvec_transp = None
-
-        if hasattr(A, 'dtype'):
-            dtype = A.dtype
-        else:
-            dtype = None
-
-        matvec = A.matvec
+    elif hasattr(A, 'shape'):
         nargout, nargin = A.shape
+        matvec = None
+        matvec_transp = None
+        dtype = None
+        symmetric = False
+
+        if hasattr(A, 'matvec'):
+            matvec = A.matvec
+            if hasattr(A, 'matvec_transp'):
+                matvec_transp = A.matvec_transp
+            elif hasattr(A, 'rmatvec'):
+                matvec_transp = A.rmatvec
+            if hasattr(A, 'dtype'):
+                dtype = A.dtype
+            if hasattr(A, 'symmetric'):
+                symmetric = A.symmetric
+
+        elif hasattr(A, '__mul__'):
+            matvec = lambda x: A * x
+            if hasattr(A, '__rmul__'):
+                matvec_transp = lambda x: x * A
+            if hasattr(A, 'dtype'):
+                dtype = A.dtype
+            try:
+                symmetric = A.isSymmetric()
+            except:
+                symmetric = False
 
         return LinearOperator(
-            nargin, nargout, symmetric=False, matvec=matvec,
+            nargin, nargout, symmetric=symmetric, matvec=matvec,
             matvec_transp=matvec_transp, dtype=dtype)
 
     else:
