@@ -299,10 +299,6 @@ class TestSymmetricalReducedLinearOperator(TestCase):
         assert_equal(R * v[sym_idx], A_mat.dot(v * vmask)[sym_idx])
 
 
-class TestPysparseLinearOperator(TestCase):
-    pass
-
-
 def test_linop_from_ndarray():
     A = np.array([[1, 2, 3],
                  [4, 5, 6]])
@@ -335,3 +331,11 @@ def test_aslinearoperator():
         M_as_mat = sparse_type((3, 3))
         A = lo.aslinearoperator(M_as_mat)
         assert_(isinstance(A, lo.LinearOperator))
+
+    import pysparse.pysparseMatrix as pyssp
+    for sparse_type in (pyssp.PysparseMatrix,):
+        M_as_mat = sparse_type(matrix=np.eye(6))
+        print M_as_mat
+        A = lo.aslinearoperator(M_as_mat)
+        assert_(isinstance(A, lo.LinearOperator))
+
