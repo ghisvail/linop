@@ -630,3 +630,4 @@ def aslinearoperator(A):
 
 # some shorter aliases
 MatrixOperator = MatrixLinearOperator
+aslinop = aslinearoperator
