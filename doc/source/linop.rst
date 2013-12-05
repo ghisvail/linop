@@ -110,9 +110,9 @@ provided Numpy array. For example:
 .. code-block:: python
 
     m = np.arange(12).reshape([4, 3])
-    M = MatrixOperator(m)
+    M = MatrixLinearOperator(m)
 
-.. autoclass:: MatrixOperator
+.. autoclass:: MatrixLinearOperator
    :show-inheritance:
    :members:
    :inherited-members:
@@ -160,6 +160,16 @@ matrices or Numpy arrays.
 .. autofunction:: linop_from_ndarray
 
 .. autofunction:: aslinearoperator
+
+Aliases
+-------
+
+.. versionadded:: 0.5
+
+Shorter aliases to some linear operators are now available and listed below:
+
+* `MatrixOperator` for :class:`MatrixLinearOperator`
+
 
 Exceptions
 ----------

@@ -108,6 +108,19 @@ horizontally. They must be defined in a flattened list.
    :inherited-members:
    :undoc-members:
 
+Aliases
+-------
+
+.. versionadded:: 0.5
+
+Shorter aliases to some linear operators are now available and listed below:
+
+* `BlockOperator` for :class:`BlockLinearOperator`
+* `BlockDiagonalOperator` for :class:`BlockDiagonalLinearOperator`
+* `BlockHorizontalOperator` for :class:`BlockHorizontalLinearOperator`
+* `BlockVerticalOperator` for :class:`BlockVerticalLinearOperator`
+
+
 Iterating and indexing
 ----------------------
 
