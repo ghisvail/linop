@@ -260,11 +260,43 @@ class TestZeroOperator(TestCase):
 
 
 class TestReducedLinearOperator(TestCase):
-    pass
+    def test_init(self):
+        v = np.arange(6)
+        A = lo.MatrixOperator(np.outer(v, v))
+        R = lo.ReducedLinearOperator(A, [1, 2, 3], [4, 5])
+        self.assertFalse(R.symmetric)
+        self.assert_(R.shape == (3, 2))
+
+    def test_runtime(self):
+        v = np.arange(6)
+        A_mat = np.outer(v, v)
+        A = lo.MatrixOperator(A_mat)
+        row_idx = [2, 4]
+        col_idx = [1, 2, 3]
+        R = lo.ReducedLinearOperator(A, row_idx, col_idx)
+        vmask = np.zeros(v.size); vmask[col_idx] = 1
+        assert_equal(R * v[col_idx], A_mat.dot(v * vmask)[row_idx])
 
 
 class TestSymmetricalReducedLinearOperator(TestCase):
-    pass
+    def test_init(self):
+        v = np.arange(6)
+        A = lo.MatrixOperator(np.outer(v, v))
+        R = lo.SymmetricallyReducedLinearOperator(A, [1, 2, 3])
+        self.assertTrue(R.symmetric)
+        A = lo.MatrixOperator(np.outer(v-1, v))
+        R = lo.SymmetricallyReducedLinearOperator(A, [1, 2, 3])
+        self.assertFalse(R.symmetric)
+        self.assert_(R.shape == (3, 3))
+
+    def test_runtime(self):
+        v = np.arange(6)
+        A_mat = np.outer(v, v)
+        A = lo.MatrixOperator(A_mat)
+        sym_idx = [1, 2, 3]
+        R = lo.SymmetricallyReducedLinearOperator(A, sym_idx)
+        vmask = np.zeros(v.size); vmask[sym_idx] = 1
+        assert_equal(R * v[sym_idx], A_mat.dot(v * vmask)[sym_idx])
 
 
 class TestPysparseLinearOperator(TestCase):
