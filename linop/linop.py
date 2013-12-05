@@ -356,7 +356,7 @@ class DiagonalOperator(LinearOperator):
                                                **kwargs)
 
 
-class MatrixOperator(LinearOperator):
+class MatrixLinearOperator(LinearOperator):
 
     """
     Class representing a matrix operator.
@@ -396,7 +396,7 @@ class MatrixOperator(LinearOperator):
         else:
             matvec_transp = None
 
-        super(MatrixOperator, self).__init__(matrix.shape[1], matrix.shape[0],
+        super(MatrixLinearOperator, self).__init__(matrix.shape[1], matrix.shape[0],
                                              symmetric=symmetric,
                                              matvec=matvec,
                                              matvec_transp=matvec_transp,
@@ -548,7 +548,7 @@ def linop_from_ndarray(A):
     Return a linear operator from a Numpy `ndarray`.
 
     .. deprecated:: 0.4
-        Use :class:`MatrixOperator` or :func:`aslinearoperator` instead.
+        Use :class:`MatrixLinearOperator` or :func:`aslinearoperator` instead.
 
     """
     return LinearOperator(A.shape[1], A.shape[0],
@@ -580,10 +580,10 @@ def aslinearoperator(A):
         return A
 
     elif isinstance(A, np.ndarray) or isinstance(A, np.matrix):
-        return MatrixOperator(A)
+        return MatrixLinearOperator(A)
 
     elif isspmatrix(A):
-        return MatrixOperator(A)
+        return MatrixLinearOperator(A)
 
     elif hasattr(A, 'shape') and hasattr(A, 'matvec'):
 
@@ -608,3 +608,7 @@ def aslinearoperator(A):
 
     else:
         raise TypeError('unsupported object type')
+
+
+# some shorter aliases
+MatrixOperator = MatrixLinearOperator

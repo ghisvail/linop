@@ -315,3 +315,10 @@ class BlockVerticalLinearOperator(BlockLinearOperator):
 
         super(BlockVerticalLinearOperator, self).__init__(
             blocks=blocks, symmetric=False, **kwargs)
+
+
+# some shorter aliases
+BlockOperator = BlockLinearOperator
+BlockDiagonalOperator = BlockDiagonalLinearOperator
+BlockHorizontalOperator = BlockHorizontalLinearOperator
+BlockVerticalOperator = BlockVerticalLinearOperator
