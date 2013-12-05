@@ -1,3 +1,9 @@
+version 0.6
+-----------
+ * test suite is now completed
+ * PysparseLinearOperator now deprecated in favour of aslinearoperator
+ * add aslinop alias for aslinearoperator
+
 version 0.5
 -----------
  * add support for Python 3
