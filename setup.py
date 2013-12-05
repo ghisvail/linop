@@ -43,7 +43,6 @@ def setup_package():
                                  'Intended Audience :: Developers',
                                  'Intended Audience :: Science/Research',
                                  'License :: OSI Approved',
-                                 'Programming Language :: Python',
                                  'Topic :: Scientific/Engineering',
                                  'Topic :: Software Development',
                                  'Operating System :: OS Independent',
