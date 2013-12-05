@@ -21,7 +21,7 @@ above. If more structure is present, for example if the off-diagonal blocks are
 zero, :math:`K` is a block-diagonal operator and the class
 ``BlockDiagonalLinearOperator`` may be used to define it.
 
-.. automodule:: blkop
+.. automodule:: linop.blkop
 
 General Block Operators
 -----------------------
