@@ -169,6 +169,7 @@ Aliases
 Shorter aliases to some linear operators are now available and listed below:
 
 * `MatrixOperator` for :class:`MatrixLinearOperator`
+* `aslinop` for :func:`aslinearoperator`
 
 
 Exceptions
