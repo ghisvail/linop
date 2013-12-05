@@ -16,18 +16,18 @@ the development of advanced mathematical frameworks.
 Requirements
 ============
 
-* [Python](http://www.python.org>) 2.7 (support for Python 3 is coming)
+* [Python](http://www.python.org>) 2 (>=2.6) or 3 (>=3.2)
 * [NumPy](http://www.scipy.org/NumPy)
 
 
 Installation
 ============
 
-Using pip / easy_install (recommended)::
+Using pip / easy_install (recommended):
     
     pip install linop
 
-From the cloned sources::
+From the cloned sources:
 
     python setup.py install
 
@@ -37,10 +37,9 @@ Documentation
 
 The package documentation can be found 
 [here](http://pythonhosted.org/linop/). The documentation can be built 
-using Sphinx. From the root of the source directory, do::
+using Sphinx. From the root of the source directory, do:
 
-    cd doc
-    make html
+    python setup.py build_sphinx
 
 The html documentation will be available in doc/build/html.
 
@@ -59,4 +58,8 @@ to contribute to the improvement of the existing code base, ideally by filing
 an issue to the bug tracker, cloning the repository and submitting a pull 
 request.
 
+The test suite uses [nose](http://nose.readthedocs.org/) and can be run with:
+
+    python setup.py test
+    
 A list of contributors will be updated in the [AUTHORS](./AUTHORS) file.
