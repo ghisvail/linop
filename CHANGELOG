@@ -1,3 +1,9 @@
+version 0.5
+-----------
+ * add support for Python 3
+ * add shorter aliases for several operators
+ * further simplification of the setup script
+
 version 0.4
 -----------
  * add BlockVert. and BlockHoriz. operators
