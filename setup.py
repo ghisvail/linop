@@ -13,8 +13,8 @@ MAINTAINER_EMAIL = 'ghisvail@gmail.com'
 URL = 'https://github.com/ghisvail/linop'
 LICENSE = 'LGPLv2'
 
-version = '0.5'
-release = True
+version = '0.6'
+release = False
 if not release:
     version += '-dev'
 VERSION = version
