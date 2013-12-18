@@ -92,6 +92,10 @@ class BaseLinearOperator(object):
         s += ' with shape (%d,%d)' % (self.nargout, self.nargin)
         return s
 
+    def dot(self, x):
+        """Numpy-like dot() method."""
+        return self.__mul__(x)
+
 
 class LinearOperator(BaseLinearOperator):
 
