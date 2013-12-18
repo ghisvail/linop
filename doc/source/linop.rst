@@ -24,7 +24,7 @@ Linear Operators Defined by Functions
 -------------------------------------
 
 It is intuitive to define an operator by its *action* on vectors. The
-``LinearOperator`` class takes arguments ``matvec`` and ``matvec_transp`` to
+``LinearOperator`` class takes arguments ``matvec`` and ``rmatvec`` to
 define the action of the operator and of its transpose.
 
 Here is a simple example:
@@ -34,7 +34,10 @@ Here is a simple example:
     import numpy as np
     A = LinearOperator(nargin=3, nargout=3, matvec=lambda v: 2*v, symmetric=True)
     B = LinearOperator(nargin=4, nargout=3, matvec=lambda v: np.arange(3)*v[:3],
-                       matvec_transp=lambda v: np.concatenate((np.arange(3)*v, np.zeros(1))))
+                       rmatvec=lambda v: np.concatenate((np.arange(3)*v, np.zeros(1))))
+
+The API also supports using the keyword argument ``matvec_transp`` to replace 
+to maintain compatibility with pysparse-style instantiation.
 
 Here, ``A`` represents the operator :math:`2I`, where :math:`I` is the identity
 and ``B`` could be represented by the matrix
@@ -48,7 +51,7 @@ and ``B`` could be represented by the matrix
     \end{bmatrix}.
 
 Note that any callable object can be used to pass values for ``matvec`` and
-``matvec_transp``. For example :
+``rmatvec``. For example :
 
 .. code-block:: python
 
@@ -60,7 +63,7 @@ Note that any callable object can be used to pass values for ``matvec`` and
             return np.concatenate((np.arange(3)*v, np.zeros(1)))
 
     myobject = MyClass()
-    B = LinearOperator(nargin=4, nargout=3, matvec=func, matvec_transp=myobject)
+    B = LinearOperator(nargin=4, nargout=3, matvec=func, rmatvec=myobject)
 
 
 is perfectly valid. Based on this example, arbitrarily complex operators may be

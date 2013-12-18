@@ -51,6 +51,13 @@ class TestLinearOperator(TestCase):
         A = lo.LinearOperator(nargin=matvecs['shape'][1],
                               nargout=matvecs['shape'][0],
                               matvec=matvecs['matvec'],
+                              rmatvec=matvecs['rmatvec'])        
+        assert_(A.T is not None)
+        assert_(A.H is not None)
+
+        A = lo.LinearOperator(nargin=matvecs['shape'][1],
+                              nargout=matvecs['shape'][0],
+                              matvec=matvecs['matvec'],
                               matvec_transp=matvecs['rmatvec'])        
         assert_(A.T is not None)
         assert_(A.H is not None)
@@ -60,19 +67,19 @@ class TestLinearOperator(TestCase):
         A = lo.LinearOperator(nargin=matvecs['shape'][1],
                               nargout=matvecs['shape'][0],
                               matvec=matvecs['matvec'],
-                              matvec_transp=matvecs['rmatvec'])
+                              rmatvec=matvecs['rmatvec'])
 
         matvecs = get_matvecs(self.B)
         B = lo.LinearOperator(nargin=matvecs['shape'][1],
                               nargout=matvecs['shape'][0],
                               matvec=matvecs['matvec'],
-                              matvec_transp=matvecs['rmatvec'])
+                              rmatvec=matvecs['rmatvec'])
 
         matvecs = get_matvecs(self.C)
         C = lo.LinearOperator(nargin=matvecs['shape'][1],
                               nargout=matvecs['shape'][0],
                               matvec=matvecs['matvec'],
-                              matvec_transp=matvecs['rmatvec'])
+                              rmatvec=matvecs['rmatvec'])
 
         u = np.array([1, 1])
         v = np.array([1, 1, 1])
@@ -133,7 +140,7 @@ class TestLinearOperator(TestCase):
             A = lo.LinearOperator(nargin=matvecs['shape'][1],
                                   nargout=matvecs['shape'][0],
                                   matvec=matvecs['matvec'],
-                                  matvec_transp=matvecs['rmatvec'],
+                                  rmatvec=matvecs['rmatvec'],
                                   dtype=dtype_op)
             x = np.array([1, 1, 1]).astype(dtype_in)
             assert_((A * x).dtype == dtype_out)
