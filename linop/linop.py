@@ -140,9 +140,6 @@ class LinearOperator(BaseLinearOperator):
                     msg += ' Got ' + str(transpose_of.__class__)
                     raise ValueError(msg)
 
-        if self.__H is not None:
-            self.rmatvec = self.__H.matvec
-
         if not issubclass(np.dtype(self.dtype).type, np.complex):
             self.T = self.__H
 

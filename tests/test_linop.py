@@ -46,27 +46,6 @@ class TestLinearOperator(TestCase):
         assert_(hasattr(A, 'matvec'))
         assert_(hasattr(A, 'dtype'))
         assert_(hasattr(A, 'H'))
-        assert_(not hasattr(A, 'rmatvec'))
-
-        A = lo.LinearOperator(nargin=matvecs['shape'][1],
-                              nargout=matvecs['shape'][0],
-                              matvec=matvecs['matvec'],
-                              matvec_transp=matvecs['rmatvec'])
-        assert_(hasattr(A, 'rmatvec'))
-
-        A = lo.LinearOperator(nargin=matvecs['shape'][1],
-                              nargout=matvecs['shape'][0],
-                              matvec=matvecs['matvec'],
-                              rmatvec=matvecs['rmatvec'])
-        assert_(hasattr(A, 'rmatvec'))
-
-        A = lo.LinearOperator(nargin=matvecs['shape'][1],
-                              nargout=matvecs['shape'][0],
-                              matvec=matvecs['matvec'],
-                              rmatvec=matvecs['rmatvec'],
-                              dtype=np.int64)
-        assert_(hasattr(A, 'T'))
-        assert_(A.T is A.H)
 
         A = lo.LinearOperator(nargin=matvecs['shape'][1],
                               nargout=matvecs['shape'][0],
@@ -108,7 +87,7 @@ class TestLinearOperator(TestCase):
         assert_equal(A.matvec(v), [6, 15])
         assert_equal(A.dot(v), [6, 15])
         assert_equal(A.H * u, [5, 7, 9])
-        assert_equal(A.H * u, A.rmatvec(u))
+        #assert_equal(A.H * u, A.rmatvec(u))
         assert_equal((A * 2) * v, A * (2 * v))
         assert_equal((A * 2) * v, (2 * A) * v)
         assert_equal((A / 2) * v, A * (v / 2))
