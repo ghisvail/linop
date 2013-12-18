@@ -140,8 +140,15 @@ class LinearOperator(BaseLinearOperator):
                     msg += ' Got ' + str(transpose_of.__class__)
                     raise ValueError(msg)
 
-        if not issubclass(np.dtype(self.dtype).type, np.complex):
-            self.T = self.__H
+
+    @property
+    def T(self):
+        """The transpose operator.
+        
+        .. note:: this is an alias to the adjoint operator 
+        
+        """
+        return self.__H
 
     @property
     def H(self):
