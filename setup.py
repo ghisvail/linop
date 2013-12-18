@@ -22,7 +22,7 @@ VERSION = version
 
 try:
     import setuptools
-    extra_setuptools_args = dict(test_require=['nose', 'scipy'],
+    extra_setuptools_args = dict(test_requires=['nose', 'numpy', 'scipy'],
                                  test_suite="nose.collector",
                                  use_2to3=True,
                                  zip_safe=False)
