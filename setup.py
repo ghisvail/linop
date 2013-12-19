@@ -13,7 +13,7 @@ MAINTAINER_EMAIL = 'ghisvail@gmail.com'
 URL = 'https://github.com/ghisvail/linop'
 LICENSE = 'LGPLv2'
 
-version = '0.6'
+version = '0.7'
 release = True
 if not release:
     version += '-dev'
@@ -22,7 +22,7 @@ VERSION = version
 
 try:
     import setuptools
-    extra_setuptools_args = dict(test_require=['nose', 'scipy'],
+    extra_setuptools_args = dict(tests_require=['nose', 'numpy', 'scipy'],
                                  test_suite="nose.collector",
                                  use_2to3=True,
                                  zip_safe=False)

@@ -35,11 +35,11 @@ block on the diagonal must be symmetric. For example:
     A = LinearOperator(nargin=3, nargout=3,
                     matvec=lambda v: 2*v, symmetric=True)
     B = LinearOperator(nargin=4, nargout=3, matvec=lambda v: v[:3],
-                    matvec_transp=lambda v: np.concatenate((v, np.zeros(1))))
+                    rmatvec=lambda v: np.concatenate((v, np.zeros(1))))
     C = LinearOperator(nargin=3, nargout=2, matvec=lambda v: v[:2],
-                    matvec_transp=lambda v: np.concatenate((v, np.zeros(1))))
+                    rmatvec=lambda v: np.concatenate((v, np.zeros(1))))
     D = LinearOperator(nargin=4, nargout=2, matvec=lambda v: v[:2],
-                    matvec_transp=lambda v: np.concatenate((v, np.zeros(2))))
+                    rmatvec=lambda v: np.concatenate((v, np.zeros(2))))
     E = LinearOperator(nargin=4, nargout=4,
                     matvec=lambda v: -v, symmetric=True)
 

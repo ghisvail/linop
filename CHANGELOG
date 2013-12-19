@@ -1,3 +1,10 @@
+version 0.7
+-----------
+ * API: rmatvec becomes default, matvec_transp still supported
+ * add .dot() to LinearOperator interface as alias to __mul__
+ * both .T and .H are provided, leaves choice of notation to the user
+ * typo and bug fixes + update of test suite
+
 version 0.6
 -----------
  * test suite is now completed

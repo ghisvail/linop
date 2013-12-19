@@ -45,69 +45,49 @@ class TestLinearOperator(TestCase):
                               matvec=matvecs['matvec'])
         assert_(hasattr(A, 'matvec'))
         assert_(hasattr(A, 'dtype'))
-        assert_(hasattr(A, 'H'))
-        assert_(not hasattr(A, 'rmatvec'))
+        assert_(A.T is None)
+        assert_(A.H is None)
+        
+        A = lo.LinearOperator(nargin=matvecs['shape'][1],
+                              nargout=matvecs['shape'][0],
+                              matvec=matvecs['matvec'],
+                              rmatvec=matvecs['rmatvec'])        
+        assert_(A.T is not None)
+        assert_(A.H is not None)
 
         A = lo.LinearOperator(nargin=matvecs['shape'][1],
                               nargout=matvecs['shape'][0],
                               matvec=matvecs['matvec'],
-                              matvec_transp=matvecs['rmatvec'])
-        assert_(hasattr(A, 'rmatvec'))
-
-        A = lo.LinearOperator(nargin=matvecs['shape'][1],
-                              nargout=matvecs['shape'][0],
-                              matvec=matvecs['matvec'],
-                              rmatvec=matvecs['rmatvec'])
-        assert_(hasattr(A, 'rmatvec'))
-
-        A = lo.LinearOperator(nargin=matvecs['shape'][1],
-                              nargout=matvecs['shape'][0],
-                              matvec=matvecs['matvec'],
-                              rmatvec=matvecs['rmatvec'],
-                              dtype=np.int64)
-        assert_(hasattr(A, 'T'))
-        assert_(A.T is A.H)
-
-        A = lo.LinearOperator(nargin=matvecs['shape'][1],
-                              nargout=matvecs['shape'][0],
-                              matvec=matvecs['matvec'],
-                              rmatvec=matvecs['rmatvec'],
-                              dtype=np.float64)
-        assert_(hasattr(A, 'T'))
-        assert_(A.T is A.H)
-
-        A = lo.LinearOperator(nargin=matvecs['shape'][1],
-                              nargout=matvecs['shape'][0],
-                              matvec=matvecs['matvec'],
-                              rmatvec=matvecs['rmatvec'],
-                              dtype=np.complex128)
-        assert_(not hasattr(A, 'T'))
+                              matvec_transp=matvecs['rmatvec'])        
+        assert_(A.T is not None)
+        assert_(A.H is not None)
 
     def test_runtime(self):
         matvecs = get_matvecs(self.A)
         A = lo.LinearOperator(nargin=matvecs['shape'][1],
                               nargout=matvecs['shape'][0],
                               matvec=matvecs['matvec'],
-                              matvec_transp=matvecs['rmatvec'])
+                              rmatvec=matvecs['rmatvec'])
 
         matvecs = get_matvecs(self.B)
         B = lo.LinearOperator(nargin=matvecs['shape'][1],
                               nargout=matvecs['shape'][0],
                               matvec=matvecs['matvec'],
-                              matvec_transp=matvecs['rmatvec'])
+                              rmatvec=matvecs['rmatvec'])
 
         matvecs = get_matvecs(self.C)
         C = lo.LinearOperator(nargin=matvecs['shape'][1],
                               nargout=matvecs['shape'][0],
                               matvec=matvecs['matvec'],
-                              matvec_transp=matvecs['rmatvec'])
+                              rmatvec=matvecs['rmatvec'])
 
         u = np.array([1, 1])
         v = np.array([1, 1, 1])
         assert_equal(A * v, [6, 15])
-        assert_equal(A * v, A.matvec([1, 1, 1]))
+        assert_equal(A.matvec(v), [6, 15])
+        assert_equal(A.dot(v), [6, 15])
         assert_equal(A.H * u, [5, 7, 9])
-        assert_equal(A.H * u, A.rmatvec(u))
+        #assert_equal(A.H * u, A.rmatvec(u))
         assert_equal((A * 2) * v, A * (2 * v))
         assert_equal((A * 2) * v, (2 * A) * v)
         assert_equal((A / 2) * v, A * (v / 2))
@@ -160,7 +140,7 @@ class TestLinearOperator(TestCase):
             A = lo.LinearOperator(nargin=matvecs['shape'][1],
                                   nargout=matvecs['shape'][0],
                                   matvec=matvecs['matvec'],
-                                  matvec_transp=matvecs['rmatvec'],
+                                  rmatvec=matvecs['rmatvec'],
                                   dtype=dtype_op)
             x = np.array([1, 1, 1]).astype(dtype_in)
             assert_((A * x).dtype == dtype_out)

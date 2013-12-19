@@ -92,6 +92,10 @@ class BaseLinearOperator(object):
         s += ' with shape (%d,%d)' % (self.nargout, self.nargin)
         return s
 
+    def dot(self, x):
+        """Numpy-like dot() method."""
+        return self.__mul__(x)
+
 
 class LinearOperator(BaseLinearOperator):
 
@@ -99,17 +103,17 @@ class LinearOperator(BaseLinearOperator):
     Generic linear operator class.
 
     A linear operator constructed from a `matvec` and (possibly) a
-    `matvec_transp` function. If `symmetric` is `True`, `matvec_transp` is
+    `rmatvec` function. If `symmetric` is `True`, `rmatvec` is
     ignored. All other keyword arguments are passed directly to the superclass.
 
     """
 
-    def __init__(self, nargin, nargout, matvec, matvec_transp=None, **kwargs):
+    def __init__(self, nargin, nargout, matvec, rmatvec=None, **kwargs):
 
         super(LinearOperator, self).__init__(nargin, nargout, **kwargs)
         self.__transposed = kwargs.get('transposed', False)
         transpose_of = kwargs.get('transpose_of', None)
-        matvec_transp = matvec_transp or kwargs.get('rmatvec', None)
+        rmatvec = rmatvec or kwargs.get('matvec_transp', None)
 
         self.__matvec = matvec
 
@@ -117,11 +121,11 @@ class LinearOperator(BaseLinearOperator):
             self.__H = self
         else:
             if transpose_of is None:
-                if matvec_transp is not None:
+                if rmatvec is not None:
                     # Create 'pointer' to transpose operator.
                     self.__H = LinearOperator(nargout, nargin,
-                                              matvec_transp,
-                                              matvec_transp=matvec,
+                                              rmatvec,
+                                              rmatvec=matvec,
                                               transposed=not self.__transposed,
                                               transpose_of=self,
                                               **kwargs)
@@ -136,11 +140,15 @@ class LinearOperator(BaseLinearOperator):
                     msg += ' Got ' + str(transpose_of.__class__)
                     raise ValueError(msg)
 
-        if self.__H is not None:
-            self.rmatvec = self.__H.matvec
 
-        if not issubclass(np.dtype(self.dtype).type, np.complex):
-            self.T = self.__H
+    @property
+    def T(self):
+        """The transpose operator.
+        
+        .. note:: this is an alias to the adjoint operator 
+        
+        """
+        return self.__H
 
     @property
     def H(self):
@@ -194,13 +202,13 @@ class LinearOperator(BaseLinearOperator):
             def matvec(y):
                 return x * (self(y))
 
-            def matvec_transp(y):
+            def rmatvec(y):
                 return x * (self.H(y))
 
             return LinearOperator(self.nargin, self.nargout,
                                   symmetric=self.symmetric,
                                   matvec=matvec,
-                                  matvec_transp=matvec_transp,
+                                  rmatvec=rmatvec,
                                   dtype=result_type)
         else:
             return ZeroOperator(self.nargin, self.nargout,
@@ -214,7 +222,7 @@ class LinearOperator(BaseLinearOperator):
         def matvec(x):
             return self(op(x))
 
-        def matvec_transp(x):
+        def rmatvec(x):
             return op.T(self.H(x))
 
         result_type = np.result_type(self.dtype, op.dtype)
@@ -222,7 +230,7 @@ class LinearOperator(BaseLinearOperator):
         return LinearOperator(op.nargin, self.nargout,
                               symmetric=False,   # Generally.
                               matvec=matvec,
-                              matvec_transp=matvec_transp,
+                              rmatvec=rmatvec,
                               dtype=result_type)
 
     def __mul_vector(self, x):
@@ -255,7 +263,7 @@ class LinearOperator(BaseLinearOperator):
         def matvec(x):
             return self(x) + other(x)
 
-        def matvec_transp(x):
+        def rmatvec(x):
             return self.H(x) + other.T(x)
 
         result_type = np.result_type(self.dtype, other.dtype)
@@ -263,7 +271,7 @@ class LinearOperator(BaseLinearOperator):
         return LinearOperator(self.nargin, self.nargout,
                               symmetric=self.symmetric and other.symmetric,
                               matvec=matvec,
-                              matvec_transp=matvec_transp,
+                              rmatvec=rmatvec,
                               dtype=result_type)
 
     def __neg__(self):
@@ -278,7 +286,7 @@ class LinearOperator(BaseLinearOperator):
         def matvec(x):
             return self(x) - other(x)
 
-        def matvec_transp(x):
+        def rmatvec(x):
             return self.H(x) - other.T(x)
 
         result_type = np.result_type(self.dtype, other.dtype)
@@ -286,7 +294,7 @@ class LinearOperator(BaseLinearOperator):
         return LinearOperator(self.nargin, self.nargout,
                               symmetric=self.symmetric and other.symmetric,
                               matvec=matvec,
-                              matvec_transp=matvec_transp,
+                              rmatvec=rmatvec,
                               dtype=result_type)
 
     def __truediv__(self, other):
@@ -391,15 +399,15 @@ class MatrixLinearOperator(LinearOperator):
                      else np.all(matrix == matrix.T))
 
         if not symmetric:
-            matvec_transp = (matrix.conj().T.dot if iscomplex
+            rmatvec = (matrix.conj().T.dot if iscomplex
                              else matrix.T.dot)
         else:
-            matvec_transp = None
+            rmatvec = None
 
         super(MatrixLinearOperator, self).__init__(matrix.shape[1], matrix.shape[0],
                                              symmetric=symmetric,
                                              matvec=matvec,
-                                             matvec_transp=matvec_transp,
+                                             rmatvec=rmatvec,
                                              dtype=matrix.dtype,
                                              **kwargs)
 
@@ -411,8 +419,8 @@ class ZeroOperator(LinearOperator):
     def __init__(self, nargin, nargout, **kwargs):
         if 'matvec' in kwargs:
             kwargs.pop('matvec')
-        if 'matvec_transp' in kwargs:
-            kwargs.pop('matvec_transp')
+        if 'rmatvec' in kwargs:
+            kwargs.pop('rmatvec')
 
         def matvec(x):
             if x.shape != (nargin,):
@@ -421,7 +429,7 @@ class ZeroOperator(LinearOperator):
                 raise ValueError(msg)
             return np.zeros(nargout)
 
-        def matvec_transp(x):
+        def rmatvec(x):
             if x.shape != (nargout,):
                 msg = 'Input has shape ' + str(x.shape)
                 msg += ' instead of (%d,)' % self.nargout
@@ -430,7 +438,7 @@ class ZeroOperator(LinearOperator):
 
         super(ZeroOperator, self).__init__(nargin, nargout,
                                            matvec=matvec,
-                                           matvec_transp=matvec_transp,
+                                           rmatvec=rmatvec,
                                            **kwargs)
 
 
@@ -452,14 +460,14 @@ def ReducedLinearOperator(op, row_indices, col_indices):
         y = op * z
         return y[row_indices]
 
-    def matvec_transp(x):
+    def rmatvec(x):
         z = np.zeros(m, dtype=x.dtype)
         z[row_indices] = x[:]
         y = op.H * z
         return y[col_indices]
 
     return LinearOperator(nargin, nargout, matvec=matvec, symmetric=False,
-                          matvec_transp=matvec_transp)
+                          rmatvec=rmatvec)
 
 
 def SymmetricallyReducedLinearOperator(op, indices):
@@ -480,14 +488,14 @@ def SymmetricallyReducedLinearOperator(op, indices):
         y = op * z
         return y[indices]
 
-    def matvec_transp(x):
+    def rmatvec(x):
         z = np.zeros(m, dtype=x.dtype)
         z[indices] = x[:]
         y = op * z
         return y[indices]
 
     return LinearOperator(nargin, nargin, matvec=matvec,
-                          symmetric=op.symmetric, matvec_transp=matvec_transp)
+                          symmetric=op.symmetric, rmatvec=rmatvec)
 
 
 class ShapeError(Exception):
@@ -534,7 +542,7 @@ def PysparseLinearOperator(A):
         A.matvec(x, Ax)
         return Ax
 
-    def matvec_transp(y):
+    def rmatvec(y):
         if y.shape != (nargout,):
             msg = 'Input has shape ' + str(y.shape)
             msg += ' instead of (%d,)' % nargout
@@ -542,11 +550,11 @@ def PysparseLinearOperator(A):
         if hasattr(A, '__rmul__'):
             return y * A
         ATy = np.empty(nargin)
-        A.matvec_transp(y, ATy)
+        A.rmatvec(y, ATy)
         return ATy
 
     return LinearOperator(nargin, nargout, matvec=matvec,
-                          matvec_transp=matvec_transp, symmetric=symmetric)
+                          rmatvec=rmatvec, symmetric=symmetric)
 
 
 def linop_from_ndarray(A):
@@ -559,7 +567,7 @@ def linop_from_ndarray(A):
     """
     return LinearOperator(A.shape[1], A.shape[0],
                           lambda v: np.dot(A, v),
-                          matvec_transp=lambda u: np.dot(A.T, u),
+                          rmatvec=lambda u: np.dot(A.T, u),
                           symmetric=False,
                           dtype=A.dtype)
 
@@ -594,16 +602,16 @@ def aslinearoperator(A):
     elif hasattr(A, 'shape'):
         nargout, nargin = A.shape
         matvec = None
-        matvec_transp = None
+        rmatvec = None
         dtype = None
         symmetric = False
 
         if hasattr(A, 'matvec'):
             matvec = A.matvec
-            if hasattr(A, 'matvec_transp'):
-                matvec_transp = A.matvec_transp
-            elif hasattr(A, 'rmatvec'):
-                matvec_transp = A.rmatvec
+            if hasattr(A, 'rmatvec'):
+                rmatvec = A.rmatvec
+            elif hasattr(A, 'matvec_transp'):
+                rmatvec = A.matvec_transp
             if hasattr(A, 'dtype'):
                 dtype = A.dtype
             if hasattr(A, 'symmetric'):
@@ -612,7 +620,7 @@ def aslinearoperator(A):
         elif hasattr(A, '__mul__'):
             matvec = lambda x: A * x
             if hasattr(A, '__rmul__'):
-                matvec_transp = lambda x: x * A
+                rmatvec = lambda x: x * A
             if hasattr(A, 'dtype'):
                 dtype = A.dtype
             try:
@@ -622,7 +630,7 @@ def aslinearoperator(A):
 
         return LinearOperator(
             nargin, nargout, symmetric=symmetric, matvec=matvec,
-            matvec_transp=matvec_transp, dtype=dtype)
+            rmatvec=rmatvec, dtype=dtype)
 
     else:
         raise TypeError('unsupported object type')
