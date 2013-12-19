@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 
 DISTNAME = 'linop'
-DESCRIPTION = 'linop: a Pythonic abstraction for linear mathematical operators'
+DESCRIPTION = 'A pythonic abstraction for linear mathematical operators'
 LONG_DESCRIPTION = open('README.md').read()
 MAINTAINER = 'Ghislain Vaillant'
 MAINTAINER_EMAIL = 'ghisvail@gmail.com'
