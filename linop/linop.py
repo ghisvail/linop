@@ -111,8 +111,8 @@ class LinearOperator(BaseLinearOperator):
     def __init__(self, nargin, nargout, matvec, rmatvec=None, **kwargs):
 
         super(LinearOperator, self).__init__(nargin, nargout, **kwargs)
-        self.__transposed = kwargs.get('transposed', False)
-        transpose_of = kwargs.get('transpose_of', None)
+        adjoint_of = (kwargs.get('adjoint_of', None) or 
+                      kwargs.get('transpose_of', None))
         rmatvec = rmatvec or kwargs.get('matvec_transp', None)
 
         self.__matvec = matvec
@@ -120,24 +120,23 @@ class LinearOperator(BaseLinearOperator):
         if self.symmetric:
             self.__H = self
         else:
-            if transpose_of is None:
+            if adjoint_of is None:
                 if rmatvec is not None:
                     # Create 'pointer' to transpose operator.
                     self.__H = LinearOperator(nargout, nargin,
-                                              rmatvec,
+                                              matvec=rmatvec,
                                               rmatvec=matvec,
-                                              transposed=not self.__transposed,
-                                              transpose_of=self,
+                                              adjoint_of=self,
                                               **kwargs)
                 else:
                     self.__H = None
             else:
                 # Use operator supplied as transpose operator.
-                if isinstance(transpose_of, BaseLinearOperator):
-                    self.__H = transpose_of
+                if isinstance(adjoint_of, BaseLinearOperator):
+                    self.__H = adjoint_of
                 else:
-                    msg = 'kwarg transposed_of must be a BaseLinearOperator.'
-                    msg += ' Got ' + str(transpose_of.__class__)
+                    msg = 'kwarg adjoint_of / transpose_of must be of type LinearOperator.'
+                    msg += ' Got ' + str(adjoint_of.__class__)
                     raise ValueError(msg)
 
 

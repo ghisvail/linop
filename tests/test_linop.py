@@ -62,6 +62,24 @@ class TestLinearOperator(TestCase):
         assert_(A.T is not None)
         assert_(A.H is not None)
 
+        A = lo.LinearOperator(nargin=matvecs['shape'][1],
+                              nargout=matvecs['shape'][0],
+                              matvec=matvecs['matvec'])
+        B = lo.LinearOperator(nargin=matvecs['shape'][0],
+                              nargout=matvecs['shape'][1],
+                              matvec=matvecs['rmatvec'],
+                              adjoint_of=A)
+        assert_(B.H is A)
+
+        A = lo.LinearOperator(nargin=matvecs['shape'][1],
+                              nargout=matvecs['shape'][0],
+                              matvec=matvecs['matvec'])
+        B = lo.LinearOperator(nargin=matvecs['shape'][0],
+                              nargout=matvecs['shape'][1],
+                              matvec=matvecs['rmatvec'],
+                              transpose_of=A)
+        assert_(B.H is A)
+
     def test_runtime(self):
         matvecs = get_matvecs(self.A)
         A = lo.LinearOperator(nargin=matvecs['shape'][1],
