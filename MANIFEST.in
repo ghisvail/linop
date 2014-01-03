@@ -1,6 +1,6 @@
 include AUTHORS
 include CHANGELOG
-include COPYING
+include LICENSE.txt
 include README.md
 recursive-include linop *.py
 recursive-include tests *.py

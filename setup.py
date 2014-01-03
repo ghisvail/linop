@@ -11,7 +11,7 @@ LONG_DESCRIPTION = open('README.md').read()
 MAINTAINER = 'Ghislain Vaillant'
 MAINTAINER_EMAIL = 'ghisvail@gmail.com'
 URL = 'https://github.com/ghisvail/linop'
-LICENSE = 'LGPLv2'
+LICENSE = 'License :: OSI Approved :: BSD License'
 
 version = '0.8'
 release = False
