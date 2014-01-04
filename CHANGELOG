@@ -1,3 +1,10 @@
+version 0.8
+-----------
+ * API: adjoint_of becomes default, transpose_of still supported
+ * py3 support: drop dependency on pysparse
+ * source distribution now provides documentation source not a build
+ * switch licensing of the package from LGPL to BSD
+
 version 0.7
 -----------
  * API: rmatvec becomes default, matvec_transp still supported
