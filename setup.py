@@ -13,8 +13,8 @@ MAINTAINER_EMAIL = 'ghisvail@gmail.com'
 URL = 'https://github.com/ghisvail/linop'
 LICENSE = 'BSD'
 
-version = '0.8'
-release = True
+version = '0.9'
+release = False
 if not release:
     version += '-dev'
 VERSION = version
