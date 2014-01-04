@@ -11,7 +11,7 @@ LONG_DESCRIPTION = open('README.md').read()
 MAINTAINER = 'Ghislain Vaillant'
 MAINTAINER_EMAIL = 'ghisvail@gmail.com'
 URL = 'https://github.com/ghisvail/linop'
-LICENSE = 'License :: OSI Approved :: BSD License'
+LICENSE = 'BSD'
 
 version = '0.8'
 release = True
@@ -44,13 +44,12 @@ def setup_package():
                     classifiers=['Development Status :: 3 - Alpha',
                                  'Intended Audience :: Developers',
                                  'Intended Audience :: Science/Research',
-                                 'License :: OSI Approved',
-                                 'Topic :: Scientific/Engineering',
-                                 'Topic :: Software Development',
+                                 'License :: OSI Approved :: BSD License',
                                  'Operating System :: OS Independent',
                                  'Programming Language :: Python',
                                  'Programming Language :: Python :: 3',
-                                 ],
+                                 'Topic :: Scientific/Engineering',
+                                 'Topic :: Software Development'],
                     **extra_setuptools_args)
 
     try:
