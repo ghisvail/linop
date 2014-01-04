@@ -14,7 +14,7 @@ URL = 'https://github.com/ghisvail/linop'
 LICENSE = 'License :: OSI Approved :: BSD License'
 
 version = '0.8'
-release = False
+release = True
 if not release:
     version += '-dev'
 VERSION = version
