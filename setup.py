@@ -24,8 +24,7 @@ try:
     import setuptools
     extra_setuptools_args = dict(tests_require=['nose',
                                                 'numpy',
-                                                'scipy',
-                                                'pysparse'],
+                                                'scipy'],
                                  test_suite="nose.collector",
                                  use_2to3=True,
                                  zip_safe=False)

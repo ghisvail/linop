@@ -356,10 +356,3 @@ def test_aslinearoperator():
         A = lo.aslinearoperator(M_as_mat)
         assert_(isinstance(A, lo.LinearOperator))
 
-    import pysparse.pysparseMatrix as pyssp
-    for sparse_type in (pyssp.PysparseMatrix,):
-        M_as_mat = sparse_type(matrix=np.eye(6))
-        print M_as_mat
-        A = lo.aslinearoperator(M_as_mat)
-        assert_(isinstance(A, lo.LinearOperator))
-
