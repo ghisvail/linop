@@ -1,9 +1,3 @@
-include AUTHORS
-include CHANGELOG
-include LICENSE.txt
-include README.md
-recursive-include linop *.py
-recursive-include tests *.py
+include *.txt
 recursive-include doc *
 recursive-exclude doc/build *
-exclude MANIFEST.in

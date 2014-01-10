@@ -1,3 +1,10 @@
+version 0.8.1
+-------------
+ * simplify the build system further
+ * make text files formatting compliant with PyPI and debian packaging
+   guidelines
+ * now considered beta quality
+
 version 0.8
 -----------
  * API: adjoint_of becomes default, transpose_of still supported

@@ -1,65 +1,34 @@
-#!/usr/bin/env python
+from setuptools import setup
 
-import os
-import sys
-from setuptools import setup, find_packages
-
-
-DISTNAME = 'linop'
-DESCRIPTION = 'A pythonic abstraction for linear mathematical operators'
-LONG_DESCRIPTION = open('README.md').read()
-MAINTAINER = 'Ghislain Vaillant'
-MAINTAINER_EMAIL = 'ghisvail@gmail.com'
-URL = 'https://github.com/ghisvail/linop'
-LICENSE = 'BSD'
-
-version = '0.9'
-release = False
-if not release:
-    version += '-dev'
-VERSION = version
-
-
+f = open('README.txt')
 try:
-    import setuptools
-    extra_setuptools_args = dict(tests_require=['nose',
-                                                'numpy',
-                                                'scipy'],
-                                 test_suite="nose.collector",
-                                 use_2to3=True,
-                                 zip_safe=False)
-except ImportError:
-    extra_setuptools_args = dict()
+    README = f.read()
+finally:
+    f.close()
 
-
-def setup_package():
-    metadata = dict(name=DISTNAME,
-                    maintainer=MAINTAINER,
-                    maintainer_email=MAINTAINER_EMAIL,
-                    description=DESCRIPTION,
-                    license=LICENSE,
-                    url=URL,
-                    version=VERSION,
-                    long_description=LONG_DESCRIPTION,
-                    classifiers=['Development Status :: 3 - Alpha',
-                                 'Intended Audience :: Developers',
-                                 'Intended Audience :: Science/Research',
-                                 'License :: OSI Approved :: BSD License',
-                                 'Operating System :: OS Independent',
-                                 'Programming Language :: Python',
-                                 'Programming Language :: Python :: 3',
-                                 'Topic :: Scientific/Engineering',
-                                 'Topic :: Software Development'],
-                    **extra_setuptools_args)
-
-    try:
-        from setuptools import setup
-    except ImportError:
-        from distutils.core import setup
-
-    metadata['packages'] = ['linop']
-    setup(**metadata)
-
-
-if __name__ == '__main__':
-    setup_package()
+setup(name='linop',
+      version='0.8.1',
+      author='Ghislain Vaillant',
+      author_email='ghisvail@gmail.com',
+      description='A pythonic abstraction for linear mathematical operators',
+      long_description=README,
+      license='BSD',
+      url='https://github.com/ghisvail/linop',
+      classifiers = [
+            'Development Status :: 4 - Beta',
+            'Intended Audience :: Developers',
+            'Intended Audience :: Science/Research',
+            'License :: OSI Approved :: BSD License',
+            'Operating System :: OS Independent',
+            'Programming Language :: Python',
+            'Programming Language :: Python :: 3',
+            'Topic :: Scientific/Engineering',
+            'Topic :: Software Development',
+            ],
+      keywords=['linear', 'operator', 'mathematics'],
+      packages=['linop'],
+      tests_require=['nose', 'numpy', 'scipy'],
+      test_suite="nose.collector",
+      use_2to3=True,
+      zip_safe=False
+      )
