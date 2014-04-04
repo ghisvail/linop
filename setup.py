@@ -1,4 +1,19 @@
-from setuptools import setup
+try:
+    from setuptools import setup
+    use_setuptools = True
+except ImportError:
+    from distutils.core import setup
+    use_setuptools = False
+
+if use_setuptools:
+    extra_setup_args = dict(
+        tests_require=['nose', 'numpy', 'scipy'],
+        test_suite="nose.collector",
+        use_2to3=True,
+        zip_safe=False
+    )
+else:
+    extra_setup_args = dict()
 
 f = open('README.txt')
 try:
@@ -28,8 +43,5 @@ setup(
     ],
     keywords=['linear', 'operator', 'mathematics'],
     packages=['linop'],
-    tests_require=['nose', 'numpy', 'scipy'],
-    test_suite="nose.collector",
-    use_2to3=True,
-    zip_safe=False
+    **extra_setup_args
 )
