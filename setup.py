@@ -23,7 +23,7 @@ finally:
 
 setup(
     name='linop',
-    version='0.8.1',
+    version='0.8.2',
     author='Ghislain Vaillant',
     author_email='ghisvail@gmail.com',
     description='A pythonic abstraction for linear mathematical operators',
