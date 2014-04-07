@@ -1,3 +1,9 @@
+version 0.8.2
+-------------
+ * drop setuptools dependency in setup
+ * drop scipy dependency in linop
+ * drop some old tests
+
 version 0.8.1
 -------------
  * simplify the build system further
