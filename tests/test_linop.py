@@ -321,38 +321,3 @@ class TestSymmetricalReducedLinearOperator(TestCase):
         R = lo.SymmetricallyReducedLinearOperator(A, sym_idx)
         vmask = np.zeros(v.size); vmask[sym_idx] = 1
         assert_equal(R * v[sym_idx], A_mat.dot(v * vmask)[sym_idx])
-
-
-def test_linop_from_ndarray():
-    A = np.array([[1, 2, 3],
-                 [4, 5, 6]])
-    A_as_op = lo.linop_from_ndarray(A)
-    assert_(isinstance(A_as_op, lo.LinearOperator))
-    x = np.array([1, 1, 1])
-    assert_equal(A_as_op * x, A.dot(x))
-    x = np.array([1, 1])
-    assert_equal(A_as_op.H * x, A.T.dot(x))
-
-
-def test_aslinearoperator():
-    M_as_mat = np.array([[1, 2, 3], [4, 5, 6]])
-    M = lo.MatrixOperator(M_as_mat)
-    A = lo.aslinearoperator(M)
-    assert_(A is M)
-
-    A = lo.aslinearoperator(M_as_mat)
-    assert_(isinstance(A, lo.MatrixOperator))
-
-    import scipy.sparse.linalg.interface as ssli
-    M = ssli.MatrixLinearOperator(M_as_mat)
-    A = lo.aslinearoperator(M)
-    assert_(isinstance(A, lo.LinearOperator))
-
-    import scipy.sparse as ssp
-    for sparse_type in (ssp.bsr_matrix, ssp.coo_matrix, ssp.csc_matrix,
-                        ssp.csr_matrix, ssp.dia_matrix, ssp.dok_matrix,
-                        ssp.lil_matrix):
-        M_as_mat = sparse_type((3, 3))
-        A = lo.aslinearoperator(M_as_mat)
-        assert_(isinstance(A, lo.LinearOperator))
-
