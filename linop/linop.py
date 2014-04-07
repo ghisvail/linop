@@ -617,24 +617,29 @@ def aslinearoperator(A):
     .. versionadded:: 0.4
 
     """
-    from scipy.sparse import isspmatrix
-
     if isinstance(A, LinearOperator):
         return A
 
-    elif isinstance(A, np.ndarray) or isinstance(A, np.matrix):
-        return MatrixLinearOperator(A)
+    try:
+        import numpy as np
+        if isinstance(A, np.ndarray) or isinstance(A, np.matrix):
+            return MatrixLinearOperator(A)
+    except ImportError:
+        pass
 
-    elif isspmatrix(A):
-        return MatrixLinearOperator(A)
+    try:
+        import scipy.sparse as ssp
+        if ssp.isspmatrix(A):
+            return MatrixLinearOperator(A)
+    except ImportError:
+        pass
 
-    elif hasattr(A, 'shape'):
+    if hasattr(A, 'shape'):
         nargout, nargin = A.shape
         matvec = None
         rmatvec = None
         dtype = None
         symmetric = False
-
         if hasattr(A, 'matvec'):
             matvec = A.matvec
             if hasattr(A, 'rmatvec'):
@@ -645,7 +650,6 @@ def aslinearoperator(A):
                 dtype = A.dtype
             if hasattr(A, 'symmetric'):
                 symmetric = A.symmetric
-
         elif hasattr(A, '__mul__'):
             matvec = lambda x: A * x
             if hasattr(A, '__rmul__'):
@@ -656,11 +660,9 @@ def aslinearoperator(A):
                 symmetric = A.isSymmetric()
             except:
                 symmetric = False
-
         return LinearOperator(
             nargin, nargout, symmetric=symmetric, matvec=matvec,
             rmatvec=rmatvec, dtype=dtype)
-
     else:
         raise TypeError('unsupported object type')
 
