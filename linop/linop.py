@@ -385,12 +385,23 @@ class DiagonalOperator(LinearOperator):
         if diag.ndim != 1:
             msg = "diag array must be 1-d"
             raise ValueError(msg)
+        
+        self.__diag = diag
 
-        super(DiagonalOperator, self).__init__(diag.shape[0], diag.shape[0],
-                                               symmetric=True,
-                                               matvec=lambda x: diag * x,
-                                               dtype=diag.dtype,
-                                               **kwargs)
+        super(DiagonalOperator, self).__init__(
+            self.__diag.shape[0],
+            self.__diag.shape[0],
+            symmetric=True,
+            matvec=lambda x: self.__diag * x,
+            dtype=self.__diag.dtype,
+            **kwargs)
+
+	@property
+	def diag(self):
+		"""
+		Provides a reference to the internal array of the operator.
+		"""
+		return self.__diag
 
 
 class MatrixLinearOperator(LinearOperator):
@@ -421,24 +432,37 @@ class MatrixLinearOperator(LinearOperator):
             msg = "matrix must be 2-d (shape can be [M, N], [M, 1] or [1, N])"
             raise ValueError(msg)
 
-        matvec = matrix.dot
+        self.__matrix = matrix
+
+        matvec = self.__matrix.dot
         iscomplex = issubclass(np.dtype(matrix.dtype).type, np.complex)
 
-        symmetric = (np.all(matrix == matrix.conj().T) if iscomplex
-                     else np.all(matrix == matrix.T))
+        if iscomplex:
+            symmetric = np.all(self.__matrix == self.__matrix.conj().T) 
+        else:
+            symmetric = np.all(self.__matrix == self.__matrix.T)
 
         if not symmetric:
-            rmatvec = (matrix.conj().T.dot if iscomplex
-                             else matrix.T.dot)
+            rmatvec = (self.__matrix.conj().T.dot if iscomplex
+				else self.__matrix.T.dot)
         else:
             rmatvec = None
 
-        super(MatrixLinearOperator, self).__init__(matrix.shape[1], matrix.shape[0],
-                                             symmetric=symmetric,
-                                             matvec=matvec,
-                                             rmatvec=rmatvec,
-                                             dtype=matrix.dtype,
-                                             **kwargs)
+        super(MatrixLinearOperator, self).__init__(
+		    self.__matrix.shape[1],
+            self.__matrix.shape[0],
+            symmetric=symmetric,
+            matvec=matvec,
+            rmatvec=rmatvec,
+            dtype=self.__matrix.dtype,
+            **kwargs)
+
+	@property
+	def matrix(self):
+		"""
+		Provides a reference to the internal array of the operator.
+		"""
+		return self.__matrix
 
 
 class ZeroOperator(LinearOperator):
